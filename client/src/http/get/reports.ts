@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosResponse } from "axios";
 import { FetchMapReportsParams } from "../../types/map";
+import { DOMAIN_NAME_GO } from "../envPaths";
 
 export function FetchReports(): Promise<AxiosResponse<any, any>> {
     try {
-        return axios.get("https://clamscanner.com/go/fetch/reports", {
+        return axios.get(`${DOMAIN_NAME_GO}/fetch/reports`, {
             withCredentials: true
         });
     } catch (error) {
@@ -13,9 +15,13 @@ export function FetchReports(): Promise<AxiosResponse<any, any>> {
 }
 
 
-export function FetchMapReports({ month, mollusk, status }: FetchMapReportsParams): Promise<AxiosResponse<any, any>> {
+export function FetchMapReports({ month, durian }: FetchMapReportsParams): Promise<AxiosResponse<any, any>> {
+
+    console.log("month: ", month);
+    console.log("durian: ", durian);
+    
     try {
-        return axios.get(`https://clamscanner.com/go/fetch/map/reports/${month}/${encodeURIComponent(mollusk)}/${encodeURIComponent(status)}`, {
+        return axios.get(`${DOMAIN_NAME_GO}/fetch/map/reports/${month}/${encodeURIComponent(durian)}`, {
             withCredentials: true
         });
     } catch (error) {
@@ -28,7 +34,7 @@ export function FetchMapReports({ month, mollusk, status }: FetchMapReportsParam
 
 export function FetchYearlyReportsPerCity(): Promise<AxiosResponse<any, any>> {
     try {
-        return axios.get("https://clamscanner.com/go/fetch/reports/city", {
+        return axios.get(`${DOMAIN_NAME_GO}/fetch/reports/city`, {
             withCredentials: true
         });
     } catch (error) {
@@ -37,9 +43,9 @@ export function FetchYearlyReportsPerCity(): Promise<AxiosResponse<any, any>> {
     }
 }
 
-export function FetchYearlyReportsPerProvince(): Promise<AxiosResponse<any, any>> {
+export function FetchYearlyReportsPerStreet(): Promise<AxiosResponse<any, any>> {
     try {
-        return axios.get("https://clamscanner.com/go/fetch/reports/province", {
+        return axios.get(`${DOMAIN_NAME_GO}/fetch/reports/street`, {
             withCredentials: true
         });
     } catch (error) {
@@ -51,7 +57,7 @@ export function FetchYearlyReportsPerProvince(): Promise<AxiosResponse<any, any>
 
 export function FetchReportsPerMollusk(): Promise<AxiosResponse<any, any>> {
     try {
-        return axios.get("https://clamscanner.com/go/fetch/reports/mollusk", {
+        return axios.get(`${DOMAIN_NAME_GO}/fetch/reports/mollusk`, {
             withCredentials: true
         });
     } catch (error) {

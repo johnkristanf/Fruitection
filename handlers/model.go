@@ -23,9 +23,9 @@ type RESPONSE struct{
 }
 
 
-func (h *ModelHandlers) FetchIdentifiedMolluskHandler(w http.ResponseWriter, r *http.Request) error {
+func (h *ModelHandlers) FetchIdentifiedDurianHandler(w http.ResponseWriter, r *http.Request) error {
 
-	molluskDetails, err := h.DB_METHOD.FetchClassifiedMolluskDetails(r.PathValue("mollusk_name"))
+	molluskDetails, err := h.DB_METHOD.FetchClassifiedDurianDetails(r.PathValue("durian_name"))
 	if err != nil{
 		return err
 	}

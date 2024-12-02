@@ -20,12 +20,12 @@ function DashboardPage(){
                 <FontAwesomeIcon
                    onClick={() => setisSidebarOpen(true)} 
                    icon={faBars} 
-                   className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer bg-black text-white p-2 rounded-md"
+                   className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer text-black p-2 rounded-md"
                 />
 
-                <div className="h-[150vh] w-full p-5 flex flex-col gap-8 mt-12 bg-gray-600 rounded-md">
+                <div className="h-[120vh] w-full p-5 flex flex-col gap-8 bg-gray-100 mt-12 rounded-md">
 
-                    <h1 className="text-white font-bold text-3xl">Clam Scanner Dashboard</h1>
+                    <h1 className="text-green-600 font-bold text-4xl">Fruitection Dashboard</h1>
                     <Charts />
 
                 </div>   

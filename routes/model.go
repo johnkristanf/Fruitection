@@ -13,7 +13,7 @@ func ModelRoutes(router *http.ServeMux, modelHandler *handlers.ModelHandlers) {
 	// router.HandleFunc("POST /scan", ParseHTTPHandler(modelHandler.ScanHandler))
 
 	router.HandleFunc("GET /fetch/model", ParseHTTPHandler(modelHandler.FetchModelsHandler))
-	router.HandleFunc("GET /fetch/mollusk/{mollusk_name}", ParseHTTPHandler(modelHandler.FetchIdentifiedMolluskHandler))
+	router.HandleFunc("GET /fetch/durian/{durian_name}", ParseHTTPHandler(modelHandler.FetchIdentifiedDurianHandler))
 
 
 }

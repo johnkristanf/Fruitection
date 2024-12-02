@@ -8,27 +8,27 @@ import (
 )
 
 type Reported_Cases struct {
-	ID          int64   `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_reportedID"`
-    Longitude   float32 `gorm:"not null"`
-    Latitude    float32 `gorm:"not null"`
-    City        string  `gorm:"index"` 
-    Province    string  `gorm:"index"` 
-    District    string  
-    ReportedAt  string  `gorm:"not null;index"` 
-    MolluskType string  `gorm:"not null"`
-    Status      string  `gorm:"not null;default:In Progress"`
+	ID          		int64   `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_reportedID"`
+    Longitude   		float32 `gorm:"not null"`
+    Latitude    		float32 `gorm:"not null"`
+    City        		string  `gorm:"index"` 
+    Province    		string  `gorm:"index"` 
+    Street    			string  `gorm:"not null"`
+    ReportedAt  		string  `gorm:"not null;index"` 
+    DurianDiseaseType 	string  
+    Status      		string  `gorm:"not null;default:In Progress"`
 	
-    UserID      int64   `gorm:"not null"`
+    UserID      		int64   `gorm:"not null"`
 }
 type REPORTED_DB_METHOD interface {
 	InsertReport(*types.Reported_Cases) (int64, error)
 
 	FetchReportedCases() ([]*types.Fetch_Cases, error)
-	FetchMapReportedCases(string, string, string) ([]*types.Fetch_Cases, error)
+	FetchMapReportedCases(string, string) ([]*types.Fetch_Cases, error)
 	
 	FetchPerCityReports() ([]*types.YearlyReportsPerCity, error)
-	FetchPerProvinceReports() ([]*types.YearlyReportsPerProvince, error)
-	FetchReportsPerMollusk() ([]*types.ReportsPerMollusk, error)
+	FetchPerStreetReports() ([]*types.YearlyReportsPerProvince, error)
+	FetchReportsPerDurianDisease() ([]*types.ReportsPerDurianDisease, error)
 	
 	DeleteReportCases(int64) error
 	UpdateReportStatus(int64) error
@@ -36,16 +36,21 @@ type REPORTED_DB_METHOD interface {
 
 func (sql *SQL) InsertReport(reportCases *types.Reported_Cases) (int64, error) {
 
-	reportedAt := time.Now().Format("January 2, 2006 03:04 PM")
+	location, err := time.LoadLocation("Asia/Manila")
+    if err != nil {
+        return 0, err
+    }
+
+	reportedAt := time.Now().In(location).Format("January 2, 2006 03:04 PM")
 
 	reportedCases := &Reported_Cases{
 		Longitude:   reportCases.Longitude,
 		Latitude:    reportCases.Latitude,
 		City:        reportCases.City,
 		Province:    reportCases.Province,
-		District:    reportCases.District,
+		Street:    reportCases.Street,
 		ReportedAt:  reportedAt,
-		MolluskType: reportCases.MolluskType,
+		DurianDiseaseType: reportCases.DurianDiseaseType,
 		UserID:      reportCases.UserID,
 	}
 
@@ -65,7 +70,7 @@ func (sql *SQL) FetchReportedCases() ([]*types.Fetch_Cases, error) {
 	var cases []*types.Fetch_Cases
 
 	result := sql.DB.Table("reported_cases").
-		Select(`reported_cases.id, reported_cases.longitude, reported_cases.latitude, reported_cases.city, reported_cases.province, reported_cases.district, reported_cases.reported_at, reported_cases.mollusk_type, reported_cases.status,
+		Select(`reported_cases.id, reported_cases.longitude, reported_cases.latitude, reported_cases.city, reported_cases.province, reported_cases.street, reported_cases.reported_at, reported_cases.durian_disease_type, reported_cases.status,
 		users.id AS user_id, users.full_name AS reporter_name, users.address AS reporter_address`).
 
 		Joins("INNER JOIN users ON reported_cases.user_id = users.id").
@@ -81,25 +86,31 @@ func (sql *SQL) FetchReportedCases() ([]*types.Fetch_Cases, error) {
 
 
 
-func (sql *SQL) FetchMapReportedCases(month string, mollusk string, status string) ([]*types.Fetch_Cases, error) {
+func (sql *SQL) FetchMapReportedCases(month string, durian string) ([]*types.Fetch_Cases, error) {
+    var cases []*types.Fetch_Cases
 
-	var cases []*types.Fetch_Cases
+    query := sql.DB.Table("reported_cases").
+        Select(`reported_cases.id, reported_cases.longitude, reported_cases.latitude, reported_cases.city, reported_cases.province, reported_cases.street, reported_cases.reported_at, reported_cases.durian_disease_type, reported_cases.status,
+        users.id AS user_id, users.full_name AS reporter_name, users.address AS reporter_address`).
+        Joins("INNER JOIN users ON reported_cases.user_id = users.id")
 
-	result := sql.DB.Table("reported_cases").
-		Select(`reported_cases.id, reported_cases.longitude, reported_cases.latitude, reported_cases.city, reported_cases.province, reported_cases.district, reported_cases.reported_at, reported_cases.mollusk_type, reported_cases.status,
-		users.id AS user_id, users.full_name AS reporter_name, users.address AS reporter_address`).
+    if month != "All" {
+        query = query.Where("reported_at ILIKE ?", "%"+month+"%")
+    }
 
-		Joins("INNER JOIN users ON reported_cases.user_id = users.id").
-		Where("reported_at ILIKE ? AND mollusk_type = ? AND status = ?", "%"+month+"%", mollusk, status).
-		Find(&cases)
+    if durian != "All" {
+        query = query.Where("durian_disease_type = ?", durian)
+    }
 
-	if result.Error != nil {
-		return nil, result.Error
-	}
+    result := query.Find(&cases)
 
-	fmt.Println("cases in db: ", cases)
+    if result.Error != nil {
+        return nil, result.Error
+    }
 
-	return cases, nil
+    fmt.Println("cases in db: ", cases)
+
+    return cases, nil
 }
 
 
@@ -122,13 +133,13 @@ func (sql *SQL) FetchPerCityReports() ([]*types.YearlyReportsPerCity, error) {
 }
 
 
-func (sql *SQL) FetchPerProvinceReports() ([]*types.YearlyReportsPerProvince, error) {
+func (sql *SQL) FetchPerStreetReports() ([]*types.YearlyReportsPerProvince, error) {
 	
 	var yearlyReports []*types.YearlyReportsPerProvince
 
 	result := sql.DB.Table("reported_cases").
-		Select(`province, EXTRACT(YEAR FROM TO_TIMESTAMP(reported_at, 'Month DD, YYYY HH:MI PM')) AS year, COUNT(id) AS reports_count `).
-		Group("province, year").
+		Select(`street, EXTRACT(YEAR FROM TO_TIMESTAMP(reported_at, 'Month DD, YYYY HH:MI PM')) AS year, COUNT(id) AS reports_count `).
+		Group("street, year").
 		Find(&yearlyReports);
 
 		if result.Error != nil {
@@ -140,13 +151,13 @@ func (sql *SQL) FetchPerProvinceReports() ([]*types.YearlyReportsPerProvince, er
 }
 
 
-func (sql *SQL) FetchReportsPerMollusk() ([]*types.ReportsPerMollusk, error){
+func (sql *SQL) FetchReportsPerDurianDisease() ([]*types.ReportsPerDurianDisease, error){
 
-	var reports []*types.ReportsPerMollusk
+	var reports []*types.ReportsPerDurianDisease
 
 	result := sql.DB.Table("reported_cases").
-		Select("mollusk_type, COUNT(id) AS mollusk_count").
-		Group("mollusk_type").
+		Select("durian_disease_type, COUNT(id) AS durian_disease_count").
+		Group("durian_disease_type").
 		Find(&reports)
 
 	if result.Error != nil{

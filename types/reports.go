@@ -1,13 +1,13 @@
 package types
 
 type Reported_Cases struct{
-	Longitude  		float32     `json:"longitude"` 
-	Latitude 	 	float32     `json:"latitude"` 
-	City  		  	string 	 	`json:"city"` 
-	Province  	  	string      `json:"province"` 
-	District 	  	string      `json:"district"` 
-	MolluskType     string 		`json:"mollusk_type"` 
-	UserID     		int64 		`json:"user_id"` 
+	Longitude  			  float32     `json:"longitude"` 
+	Latitude 	 		  float32     `json:"latitude"` 
+	City  		  		  string 	  `json:"city"` 
+	Province  	  		  string      `json:"province"` 
+	Street 	  		  	  string      `json:"street"` 
+	DurianDiseaseType     string 	  `json:"durian_disease_type"` 
+	UserID     			  int64 	  `json:"user_id"` 
 }
 
 
@@ -17,9 +17,9 @@ type Fetch_Cases struct{
 	Latitude 	 	float32     `json:"latitude"` 
 	City  		  	string 	 	`json:"city"` 
 	Province  	  	string      `json:"province"` 
-	District 	  	string      `json:"district"` 
+	Street 	  		string      `json:"street"` 
 	ReportedAt 		string 		`json:"reportedAt"` 
-	MolluskType     string 		`json:"mollusk_type"`
+	DurianDiseaseType     string 		`json:"durian_disease_type"`
     Status      	string  	`json:"status"`
 	UserID     		int64 		`json:"user_id"` 
 
@@ -35,14 +35,14 @@ type YearlyReportsPerCity struct{
 }
 
 type YearlyReportsPerProvince struct{
-	Province 		string	`json:"province"` 
+	Street 			string	`json:"street"` 
 	Year 			string	`json:"year"` 
 	ReportsCount 	int64	`json:"reports_count"` 
 }
 
-type ReportsPerMollusk struct {
-	MolluskType		string	`json:"mollusk_type"` 
-	MolluskCount	int64	`json:"mollusk_count"` 
+type ReportsPerDurianDisease struct {
+	DurianDiseaseType			string	`json:"durian_disease_type"` 
+	DurianDiseaseCount			int64	`json:"durian_disease_count"` 
 }
 
 

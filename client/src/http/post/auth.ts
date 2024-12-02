@@ -1,6 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { adminLoginCredentials } from "../../types/account";
+import { DOMAIN_NAME_GO } from "../envPaths";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function Signup(createAccountFormData: FormData): Promise<AxiosResponse<any, any>> {
     try {
         return axios.post("https://clamscanner.com/go/auth/signup", createAccountFormData, {
@@ -15,7 +17,7 @@ export function Signup(createAccountFormData: FormData): Promise<AxiosResponse<a
 
 export async function AdminLogin(loginCredentials: adminLoginCredentials): Promise<boolean> {
     try {
-        const response = await axios.post("https://clamscanner.com/go/admin/login", loginCredentials, {
+        const response = await axios.post(`${DOMAIN_NAME_GO}/admin/login`, loginCredentials, {
             withCredentials: true
         })
 

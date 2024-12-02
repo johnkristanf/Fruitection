@@ -1,9 +1,11 @@
 import axios, { AxiosResponse } from "axios";
+import { DOMAIN_NAME_GO } from '../envPaths'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function DeleteAccount(account_id: number): Promise<AxiosResponse<any, any>> {
 
     try {
-        return axios.delete(`https://clamscanner.com/go/delete/account/${encodeURIComponent(account_id)}`, {
+        return axios.delete(`${DOMAIN_NAME_GO}/delete/account/${encodeURIComponent(account_id)}`, {
             headers: {
                 "Content-Type": "application/json",
             },

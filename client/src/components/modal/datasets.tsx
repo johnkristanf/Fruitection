@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { faEdit, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
@@ -66,7 +67,7 @@ export const AddNewDatasetModal = ({setisOpenAddModal}: {
         
         <div className="bg-gray-950 fixed top-0 w-full h-full opacity-75" style={{ zIndex: 6000 }}></div>
 
-        <div className="flex flex-col bg-white rounded-md items-center fixed top-0 w-[40%] p-5" style={{zIndex: 7000}}>
+        <div className="flex flex-col bg-white rounded-md items-center fixed top-12 w-[40%] p-5" style={{zIndex: 7000}}>
             
             <h1 className="text-black font-bold text-2xl mb-5">Add New Dataset Class</h1>
 
@@ -79,12 +80,12 @@ export const AddNewDatasetModal = ({setisOpenAddModal}: {
                     className="rounded-md bg-gray-300 placeholder-gray-500 font-semibold p-2 w-[60%] focus:outline-blue-950"
                 />
 
-                <input 
+                {/* <input 
                     {...register("scientific_name", { required: true })}
                     type="text" 
                     placeholder="Scientific Name"
                     className="rounded-md bg-gray-300 placeholder-gray-500 font-semibold p-2 w-[60%] focus:outline-blue-950"
-                />
+                /> */}
 
                 <textarea 
                     {...register("description", { required: true })}
@@ -96,14 +97,17 @@ export const AddNewDatasetModal = ({setisOpenAddModal}: {
                 />
 
 
-                <input 
-                    {...register("status", { required: true })}
-                    type="text" 
-                    placeholder="Status (eg: Endangered, Vulnerable etc..)" 
+                <select 
+                    {...register("status", { required: true })} 
                     className="rounded-md bg-gray-300 placeholder-gray-500 font-semibold p-2 w-[60%] focus:outline-blue-950"
-                />
+                >
+                    <option value="" disabled>Select Status</option>
+                    <option value="N/A">N/A</option>
+                    <option value="Critical">Critical</option>
+                    <option value="Healthy">Healthy</option>
+                </select>
 
-                <button type="submit" className="text-white font-bold bg-blue-900 w-[60%] rounded-md p-3 hover:opacity-75">Add</button>
+                <button type="submit" className="text-white font-bold bg-green-600 w-[60%] rounded-md p-3 hover:opacity-75">Add</button>
 
             </form>
 
@@ -236,7 +240,7 @@ export const InfoDatasetModal = ({ classDetailsData, setisOpenInfoModal }: {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <h1 className="text-gray-500 font-bold text-lg">Scientific Name</h1>
+                        {/* <h1 className="text-gray-500 font-bold text-lg">Scientific Name</h1>
                         <input
                             type="text"
                             readOnly={readOnly}
@@ -244,7 +248,7 @@ export const InfoDatasetModal = ({ classDetailsData, setisOpenInfoModal }: {
                             onChange={handleInputChange}
                             name="scientific_name"
                             className={`rounded-md mb-5 bg-gray-300 placeholder-gray-500 font-semibold p-2 w-full focus:outline-none ${!readOnly ? 'border-2 border-blue-800' : ''}`}
-                        />
+                        /> */}
 
                         <h1 className="text-gray-500 font-bold text-lg">Status</h1>
                         <input
@@ -310,6 +314,9 @@ export function UploadModal({ className, class_id, setisOpenUpload }: {
 
             const isUploaded = await UploadNewImage(formData);
 
+            console.log("isUploaded: ", isUploaded);
+            
+
             if (isUploaded) {
                 Swal.close();
 
@@ -331,10 +338,10 @@ export function UploadModal({ className, class_id, setisOpenUpload }: {
             <div className="bg-gray-950 fixed top-0 w-full h-full opacity-75" style={{ zIndex: 6000 }}></div>
             
             <div className="flex w-full justify-center items-center">
-                <div className={`flex justify-center w-[35%] ${uploadedFiles.length <= 0 ? "h-[68%]": "h-[80%]" }  bg-white rounded-md fixed top-5`} style={{ zIndex: 7000 }}>
+                <div className={`flex justify-center w-[35%] ${uploadedFiles.length <= 0 ? "h-[68%]": "h-[80%]" }  bg-white rounded-md fixed top-5 p-8 overflow-auto`} style={{ zIndex: 7000 }}>
                     
                     <div className="flex flex-col items-center justify-center gap-5">
-                        <h1 className="font-semibold text-3xl">Upload New Dataset Images</h1>
+                        <h1 className="font-semibold text-3xl mt-5">Upload New Dataset Images</h1>
                         <p className="font-semibold text-sm ">Unsupported image type and corrupted will get discarded</p>
                         <p className="font-semibold text-sm ">Repeated image will also get discarded</p>
 
@@ -417,7 +424,7 @@ export function UploadModal({ className, class_id, setisOpenUpload }: {
                             <button
                                 type="submit"
                                 onClick={Upload}
-                                className={`font-bold rounded-md p-2 w-full hover:opacity-75 bg-blue-900 text-white`}
+                                className={`font-bold rounded-md p-2 w-full hover:opacity-75 bg-green-600 text-white`}
                             >
                                 Upload
                             </button>

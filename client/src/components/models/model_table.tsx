@@ -2,23 +2,16 @@ import { useQuery } from "react-query";
 import { FetchModels } from "../../http/get/model";
 import { FetchModelType } from "../../types/datasets";
 
-
 export function ModelTable({ setNumberOfTrainedModels }: {
-    setNumberOfTrainedModels:  React.Dispatch<React.SetStateAction<number | undefined>>
-}){
+    setNumberOfTrainedModels: React.Dispatch<React.SetStateAction<number | undefined>>
+}) {
 
     const models_query = useQuery("reported_cases", FetchModels);
     const models: FetchModelType[] = models_query.data?.data;
-    if(models) setNumberOfTrainedModels(models.length)
 
+    if (models) setNumberOfTrainedModels(models.length);
 
-
-    console.log("models: ", models)
-
-    // const openModelModal = (data: FetchModelType) => {
-    //     setisModelDetailsModal(true)
-    //     setModelDetails(data)
-    // }
+    console.log("models: ", models);
 
     return (
         <div className="overflow-auto flex items-center justify-center h-full w-full scrollable-container">
@@ -30,25 +23,25 @@ export function ModelTable({ setNumberOfTrainedModels }: {
                             <th scope="col" className="py-3 px-6">Accuracy</th>
                             <th scope="col" className="py-3 px-6">Loss</th>
                             <th scope="col" className="py-3 px-6">Trained At</th>
-                            {/* <th scope="col" className="py-3 px-6">Actions</th> */}
                         </tr>
                     </thead>
                     <tbody>
-                        {models && models.map((item) => (
-                            <tr key={item.model_id} className="text-black font-bold">
-                                <td scope="col" className="py-3 px-6"> {item.version} </td>
-                                <td scope="col" className="py-3 px-6"> {item.train_acc} </td>
-                                <td scope="col" className="py-3 px-6"> {item.train_loss} </td>
-                                <td scope="col" className="py-3 px-6"> {item.trained_at} </td>
-                                {/* <td scope="col" className="py-3 px-6 text-white flex gap-3">
-                                    <button 
-                                        onClick={() => openModelModal(item)}
-                                        className="bg-blue-900 rounded-md p-2 hover:opacity-75">
-                                        Train Details
-                                    </button>
-                                </td> */}
+                        {models && models.length > 0 ? (
+                            models.map((item) => (
+                                <tr key={item.model_id} className="text-black font-bold">
+                                    <td scope="col" className="py-3 px-6"> {item.version} </td>
+                                    <td scope="col" className="py-3 px-6"> {item.train_acc} </td>
+                                    <td scope="col" className="py-3 px-6"> {item.train_loss} </td>
+                                    <td scope="col" className="py-3 px-6"> {item.trained_at} </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={4} className="py-5 px-6 text-lg text-center text-gray-500">
+                                    No trained models available
+                                </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

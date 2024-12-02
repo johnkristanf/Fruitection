@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 import { SideBar } from "../components/navigation/sidebar";
+import { WS_URL_GO } from "../http/envPaths";
 
 const ReportedCases = lazy(() => import("../components/reports/reported"));
 const Map = lazy(() => import("../components/reports/map"));
@@ -12,7 +13,7 @@ const InitializeWSConnection = (setReports: React.Dispatch<React.SetStateAction<
     let ws: WebSocket | null = null;
 
     const connect = () => {
-        ws = new WebSocket("wss://clamscanner.com/go/ws/conn");
+        ws = new WebSocket(`${WS_URL_GO}/ws/conn`);
 
         ws.onopen = () => {
             console.log("WebSocket Connected");
@@ -46,25 +47,10 @@ const ReportsPage: React.FC = () => {
     const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(false);
     const [OpenReportsModal, setOpenReportsModal] = useState<boolean>(false);
 
-    const [MapCoor, setMapCoor] = useState<number[]>([7.3042, 126.0893]);
+    const [MapCoor, setMapCoor] = useState<number[]>([7.3087, 125.6841]);
     const [Reports, setReports] = useState<number | undefined>();
 
     const alertRef = useRef<HTMLAudioElement>(null);
-
-    // const playAudioLoop = () => {
-    //     if (alertRef.current && alertRef.current.paused) {
-    //         alertRef.current.play().catch(error => {
-    //             console.error('Error playing the audio:', error);
-    //         });
-    //     }
-    // };
-    
-    // const stopAudioLoop = () => {
-    //     if (alertRef.current && !alertRef.current.paused) {
-    //         alertRef.current.pause();
-    //         alertRef.current.loop = false;
-    //     }
-    // };
 
     useEffect(() => {
         InitializeWSConnection(setReports);
@@ -132,7 +118,7 @@ const ReportsPage: React.FC = () => {
                     <FontAwesomeIcon
                         onClick={() => setisSidebarOpen(true)} 
                         icon={faBars} 
-                        className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer bg-black text-white p-2 rounded-md"
+                        className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer  text-black p-2 rounded-md"
                     />
 
                     <audio ref={alertRef} controls style={{display: 'none'}}>

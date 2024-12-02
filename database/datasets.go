@@ -9,7 +9,6 @@ import (
 type Datasets struct {
 	ID              int64   `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_reportedID"`
 	Name            string  `gorm:"not null"`
-	ScientificName  string  `gorm:"not null"`
 	Description     string  `gorm:"not null"`
 	Status          string  `gorm:"not null"`
 
@@ -31,7 +30,6 @@ func (sql *SQL) AddDatasetClass(newClass *types.NewClass) error {
 
 	dataset := &Datasets{
 		Name: 				newClass.Name,
-		ScientificName: 	newClass.ScientificName,
 		Description: 		newClass.Description,
 		Status: 			newClass.Status,
 		Count: 				0,

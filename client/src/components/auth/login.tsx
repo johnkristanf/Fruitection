@@ -67,7 +67,12 @@ export function LoginForm(){
                 ))
             }
 
-            <button type="submit" className="text-white font-bold bg-blue-900 w-full rounded-md p-3 hover:opacity-75">Login</button>
+            <button 
+                type="submit" 
+                className="text-white font-bold bg-black w-full rounded-md p-3 hover:opacity-75"
+            >
+                Sign In
+            </button>
         </form>
     )
 }

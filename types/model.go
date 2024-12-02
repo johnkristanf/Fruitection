@@ -13,7 +13,7 @@ type Mollusk struct {
 	ClassifiedMollusk string `json:"mollusk_classified_result"`
 }
 
-type MolluskDetails struct {
+type DurianDetails struct {
 	Name            string  `json:"mollusk_name"`
 	ScientificName	string	`json:"scientific_name"`
 	Description		string	`json:"description"`

@@ -14,7 +14,7 @@ export const SideBar: React.FC<SideBarProps> = ({ setisSidebarOpen }) => {
 
     return (
 
-      <div className="w-[25%] h-full fixed left-0 bg-black flex flex-col justify-around p-5" style={{zIndex: 5000}}>
+      <div className="w-[25%] h-full fixed left-0 bg-green-600 flex flex-col justify-around p-5" style={{zIndex: 5000}}>
 
         <FontAwesomeIcon
           onClick={() => setisSidebarOpen(false)} 
@@ -35,9 +35,9 @@ export const SideBar: React.FC<SideBarProps> = ({ setisSidebarOpen }) => {
 
 function Logo(){
   return(
-    <div className="flex items-center gap-4 w-full mt-6">
-      <img src="/img/clam_logo.png" width={60} alt="ClamScanner Nav Logo" />
-      <h1 className="text-white font-bold text-3xl">Clam Scanner</h1>
+    <div className="flex items-center gap-2 w-full mt-6">
+      <img src="/img/city_logo.jpg" width={60} alt="Fruitection Nav Logo" className="rounded-full"/>
+      <h1 className="text-white font-bold text-3xl">Fruitection</h1>
     </div>
   )
   
@@ -53,7 +53,6 @@ function NavLinks() {
     { name: "Reports Map", to: "/reports" },
     { name: "Datasets", to: "/datasets" },
     { name: "Models", to: "/models" },
-    { name: "Personnel Accounts", to: "/accounts" },
   ];
 
   
@@ -96,7 +95,7 @@ function UserInfo(){
   return(
       <div className="flex flex-col items-center gap-3">
           <h1 className="text-white font-bold text-xl hover:opacity-75 hover:cursor-pointer">{ adminData?.email }</h1>
-          <button onClick={() => SignOut()} className="bg-gray-700 rounded-md p-2 text-white font-bold w-full hover:opacity-75">
+          <button onClick={() => SignOut()} className="bg-white rounded-md p-2 text-black font-bold w-full hover:opacity-75">
             Sign Out
             &nbsp; <FontAwesomeIcon icon={faRightFromBracket}/>  
           </button>

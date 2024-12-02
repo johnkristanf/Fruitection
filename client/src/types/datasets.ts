@@ -1,7 +1,7 @@
 export type DatasetClassTypes = {
     class_id:           number
     name:               string 
-    scientific_name:    string
+    // scientific_name:    string
     description:        string 
     status:             string 
     count:              string 

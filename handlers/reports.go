@@ -180,7 +180,7 @@ func (h *ReportHandler) InsertReportHandler(w http.ResponseWriter, r *http.Reque
 			
 		case reportID := <- lastReportChan:
 
-			reportKeys := [5]string{"reports", "reports_city", "reports_province", "reports_per_mollusk", "reports_map"}
+			reportKeys := [5]string{"reports", "reports_city", "reports_street", "reports_per_mollusk", "reports_map"}
 
 			if err := h.REDIS_METHOD.DELETEBYKEY(reportKeys, r); err != nil {
 				return err
@@ -226,12 +226,14 @@ func (h *ReportHandler) FetchAllReportsHandler(w http.ResponseWriter, r *http.Re
 func (h *ReportHandler) FetchMapReportsHandler(w http.ResponseWriter, r *http.Request) error {
 
 	month := r.PathValue("month")
-	mollusk := r.PathValue("mollusk")
-	status := r.PathValue("status")
+	durian := r.PathValue("durian")
+
+	fmt.Println("month: ", month)
+	fmt.Println("durian: ", durian)
 
 	var cases []*types.Fetch_Cases
 	
-	cases, err := h.DB_METHOD.FetchMapReportedCases(month, mollusk, status)
+	cases, err := h.DB_METHOD.FetchMapReportedCases(month, durian)
 	if err != nil {
 		return err
 	}
@@ -273,21 +275,21 @@ func (h *ReportHandler) FetchYearlyReportByCityHandler(w http.ResponseWriter, r 
 }
 
 
-func (h *ReportHandler) FetchYearlyReportByProvinceHandler(w http.ResponseWriter, r *http.Request) error {
+func (h *ReportHandler) FetchYearlyReportByStreetHandler(w http.ResponseWriter, r *http.Request) error {
 
 	var yearlyReports []*types.YearlyReportsPerProvince
 
-	err := h.REDIS_METHOD.GET(&yearlyReports, "reports_province", r)
+	err := h.REDIS_METHOD.GET(&yearlyReports, "reports_street", r)
 
 	if err == redis.Nil {
 
-		yearlyReports, err := h.DB_METHOD.FetchPerProvinceReports()
+		yearlyReports, err := h.DB_METHOD.FetchPerStreetReports()
 		if err != nil{
 			return err
 		}
 
 
-		if err := h.REDIS_METHOD.SET(yearlyReports, "reports_province", r); err != nil {
+		if err := h.REDIS_METHOD.SET(yearlyReports, "reports_street", r); err != nil {
 			return err
 		}
 
@@ -301,15 +303,15 @@ func (h *ReportHandler) FetchYearlyReportByProvinceHandler(w http.ResponseWriter
 	return h.JSON_METHOD.JsonEncode(w, http.StatusOK, yearlyReports)	
 }
 
-func (h *ReportHandler) FetchReportPerMollusk(w http.ResponseWriter, r *http.Request) error {
+func (h *ReportHandler) FetchReportPerDurianDiseaseHandler(w http.ResponseWriter, r *http.Request) error {
 	
-	var reportsPerMollusk []*types.ReportsPerMollusk
+	var reportsPerMollusk []*types.ReportsPerDurianDisease
 
 	err := h.REDIS_METHOD.GET(&reportsPerMollusk, "reports_per_mollusk", r)
 
 	if err == redis.Nil {
 
-		reportsPerMollusk, err := h.DB_METHOD.FetchReportsPerMollusk()
+		reportsPerMollusk, err := h.DB_METHOD.FetchReportsPerDurianDisease()
 		if err != nil{
 			return err
 		}
@@ -365,7 +367,7 @@ func (h *ReportHandler) DeleteReportHandler(w http.ResponseWriter, r *http.Reque
 		return err
 	}
 
-	reportKeys := [5]string{"reports", "reports_city", "reports_province", "reports_per_mollusk", "reports_map"}
+	reportKeys := [5]string{"reports", "reports_city", "reports_street", "reports_per_mollusk", "reports_map"}
 
 	if err := h.REDIS_METHOD.DELETEBYKEY(reportKeys, r); err != nil {
 		return err

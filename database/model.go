@@ -8,7 +8,7 @@ import (
 
 type MODEL_DB_METHOD interface {
 	InsertModelDetails(*types.ModelDetails) error
-	FetchClassifiedMolluskDetails(string) (*types.MolluskDetails, error)
+	FetchClassifiedDurianDetails(string) (*types.DurianDetails, error)
 	FetchModels() ([]*types.FetchModelDetails, error) 
 }
 
@@ -40,13 +40,13 @@ func (sql *SQL) InsertModelDetails(modelDetails *types.ModelDetails) error {
 	return nil
 }
 
-func (sql *SQL) FetchClassifiedMolluskDetails(mollusk string) (*types.MolluskDetails, error) {
+func (sql *SQL) FetchClassifiedDurianDetails(durianName string) (*types.DurianDetails, error) {
 
-	var details *types.MolluskDetails
+	var details *types.DurianDetails
 
-	result := sql.DB.Select("name, description, scientific_name, status").
+	result := sql.DB.Select("name, description, status").
 		Table("datasets").
-		Where("name ILIKE ?", mollusk).
+		Where("name ILIKE ?", durianName).
 		First(&details)
 
 	if result.Error != nil {

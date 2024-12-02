@@ -263,7 +263,6 @@ def train_save_model(train_ds, validation_ds, num_classes: int, class_names: lis
 
 
 
-
 def train_new_model(model_version):
     train_ds, val_ds, test_ds, num_classes, class_names = load_dataset()
 

@@ -5,9 +5,9 @@ export type ReportedCasesTypes = {
     latitude: number,
     city: string,
     province: string,
-    district: string,
+    street: string,
     reportedAt: string
-    mollusk_type: string
+    durian_disease_type: string
     
     user_id: number
     status: string
@@ -25,13 +25,13 @@ export type YearlyReportPerCity = {
 }
 
 
-export type YearlyReportPerProvince = {
-    province: string
+export type YearlyReportPerStreet = {
+    street: string
     year: string,
     reports_count: number
 }
 
 export type ReportsPerMollusk = {
-    mollusk_type: string,
-    mollusk_count: number
+    durian_disease_type: string,
+    durian_disease_count: number
 }

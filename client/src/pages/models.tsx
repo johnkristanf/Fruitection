@@ -9,8 +9,9 @@ import Swal from 'sweetalert2';
 import { Chart } from 'react-google-charts';
 // import { FetchModelType } from '../types/datasets';
 import { TrainModel } from '../http/post/train';
+import { WS_URL_PY } from '../http/envPaths';
 
-const socket = new WebSocket('wss://clamscanner.com/py/ws');
+const socket = new WebSocket(`${WS_URL_PY}/ws`);
 
 socket.onopen = () => {
   console.log('WebSocket Connected');
@@ -109,7 +110,7 @@ const ModelsPage: React.FC = () => {
       setHasTrainingError(false)
     } 
 
-  }, [isTrainingComplete])
+  }, [isTrainingComplete, trainingMetrics.epochs])
 
 
   const newModelVersion = numberOfTrainedModels != undefined ? (numberOfTrainedModels + 1).toString() : '1';
@@ -142,16 +143,16 @@ const ModelsPage: React.FC = () => {
           <FontAwesomeIcon
             onClick={() => setisSidebarOpen(true)} 
             icon={faBars} 
-            className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer bg-black text-white p-2 rounded-md"
+            className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer text-black p-2 rounded-md"
           />
 
         <div className="w-full flex justify-center">
-          <div className="w-[80%] bg-gray-600 rounded-md p-5 flex flex-col gap-5">
-            <div className="flex justify-between">
-              <h1 className="text-white font-bold text-3xl">Clam Scanner Models</h1>
+          <div className="w-[80%] rounded-md p-5 flex flex-col gap-5 bg-gray-100">
+            <div className="flex justify-between mb-3">
+              <h1 className="text-green-600 font-bold text-4xl">Fruitection Trained Models</h1>
               <button
                 onClick={() => mutate(newModelVersion)}
-                className="bg-blue-900 rounded-md p-3 text-white font-bold flex items-center gap-2 hover:opacity-75 hover:cursor-pointer"
+                className="bg-green-600 rounded-md p-2 text-white font-bold flex items-center gap-2 hover:opacity-75 hover:cursor-pointer"
               >
                 <FontAwesomeIcon icon={faRobot} /> Train New Model
               </button>

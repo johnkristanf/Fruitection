@@ -19,7 +19,6 @@ from ws_client import clients
 
 from upload.upload_ds_image import DatasetDatabaseOperations, DatasetImageUploadMethod
 from cache.redis import RedisCachingMethods
-from ML.chat import ChatBotService
 from ML.predict import ClamPrediction
 from train.process_train import train_new_model
 
@@ -28,19 +27,18 @@ app = FastAPI()
 # comment this out when you push to production cause the nginx configuration 
 # is handling the cors to avoid duplication error
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],  
-#     allow_credentials=True,
-#     allow_methods=["*"],  
-#     allow_headers=["*"], 
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"], 
+)
 
 load_dotenv('.env')
 
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
-chatbot = ChatBotService()
 dataset_db_ops = DatasetDatabaseOperations()
 dataset_upload_ops = DatasetImageUploadMethod()
 predict = ClamPrediction()
@@ -48,61 +46,66 @@ redis = RedisCachingMethods()
 
 s3_config = Config(s3={'use_accelerate_endpoint': True})
 DATASET_PREFIX = 'datasets'
-BUCKET_NAME = "clamscanner-bucket"
+BUCKET_NAME = "fruitection-s3-bucket"
 
 
 s3 = boto3.client(
     "s3",
     aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID"),
     aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY"),
-    region_name = "us-east-1",
+    region_name = "ap-southeast-1",
     config=s3_config
 )
 
 
 
-def list_folders_and_images_in_dataset():
-    try:
-        response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"{DATASET_PREFIX}/")
+# def list_folders_and_images_in_dataset():
+#     try:
+#         response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"{DATASET_PREFIX}/")
 
-        if 'Contents' in response:
-            for obj in response['Contents']:
-                key = obj['Key']
-                if key.endswith('/'):
-                    print(f"Folder: {key}")
-                else:
-                    print(f"Image: {key}")
-        else:
-            print("No folders or images found in the datasets folder")
+#         if 'Contents' in response:
+#             for obj in response['Contents']:
+#                 key = obj['Key']
+#                 if key.endswith('/'):
+#                     print(f"Folder: {key}")
+#                 else:
+#                     print(f"Image: {key}")
+#         else:
+#             print("No folders or images found in the datasets folder")
 
-    except Exception as e:
-        print(f"Error: {str(e)}")
+#     except Exception as e:
+#         print(f"Error: {str(e)}")
 
 # list_folders_and_images_in_dataset()
 
-def delete_all_objects():
-    try:
-        objects = s3.list_objects_v2(Bucket=BUCKET_NAME)
+# def delete_all_objects():
+#     try:
+#         objects = s3.list_objects_v2(Bucket=BUCKET_NAME)
 
-        if 'Contents' in objects:
-            keys = [{'Key': obj['Key']} for obj in objects['Contents']]
+#         if 'Contents' in objects:
+#             keys = [{'Key': obj['Key']} for obj in objects['Contents']]
             
-            s3.delete_objects(
-                Bucket=BUCKET_NAME,
-                Delete={
-                    'Objects': keys
-                }
-            )
-            print(f"Deleted {len(keys)} objects from {BUCKET_NAME}")
-        else:
-            print(f"No objects found in {BUCKET_NAME}")
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
+#             s3.delete_objects(
+#                 Bucket=BUCKET_NAME,
+#                 Delete={
+#                     'Objects': keys
+#                 }
+#             )
+#             print(f"Deleted {len(keys)} objects from {BUCKET_NAME}")
+#         else:
+#             print(f"No objects found in {BUCKET_NAME}")
+#     except Exception as e:
+#         print(f"An error occurred: {str(e)}")
 
 # delete_all_objects()
 
+
 async def upload_image(image: UploadFile, datasetClass: str):
     s3_key = f"{DATASET_PREFIX}/{datasetClass}/{image.filename}"
+
+    if image.file is None:
+        print(f"Error: {image.filename} has no file data")
+        return None
 
     try:
         s3.upload_fileobj(
@@ -145,13 +148,7 @@ async def upload_images(
             return JSONResponse(content={"message": "No images were uploaded"}, status_code=400)
         
         cache_key = f"{DATASET_PREFIX}/{datasetClass}/image_urls"
-
-        # use this for large dataset size and changes are not frequent (production)
-        # redis.DELETE(cache_key)
-
-
-        # use this for low to medium dataset size and changes are frequent (development)
-
+        
         for result in upload_results:
             if result:
                 presigned_url = s3.generate_presigned_url(
@@ -171,7 +168,8 @@ async def upload_images(
 
     except Exception as e:
         print(f"Error during upload: {e}")
-        return HTTPException(status_code=500, detail=str(e))
+        return JSONResponse(content={"message": "Error during upload"}, status_code=500)
+    
 
 
 @app.get("/fetch/images/{datasetClass}")
@@ -300,13 +298,7 @@ async def train(data: dict):
     def train_model_async(data):
         model_version = data.get('version')
         train_new_model(model_version)
-        # return {
-        #     "version": f'ClamScanner_v{model_version}',
-        #     "train_accuracy": train_acc,
-        #     "validation_accuracy": val_acc,
-        #     "train_loss": train_loss,
-        #     "validation_loss": val_loss
-        # }
+  
 
     thread = threading.Thread(target=train_model_async, args=(data,))
     thread.start()
@@ -325,10 +317,11 @@ async def scan(captured_image_file: UploadFile = File(...)):
         with open(file_path, "wb") as buffer:
             buffer.write(captured_image_file.file.read())
 
-        mollusk_classified_result = predict.mollusk_predict(file_path)
+        durian_disease_result = predict.mollusk_predict(file_path)
         response_data = {
-            "mollusk_classified_result": mollusk_classified_result
+            "durian_disease_result": durian_disease_result
         }
+        
         print(f'response_data {response_data}')
         return JSONResponse(content=response_data, status_code=200)
 
@@ -342,19 +335,19 @@ async def scan(captured_image_file: UploadFile = File(...)):
 
 
 
-@app.post("/message/chatbot")
-async def chat(data: dict):
-    try:
-        user_input = data.get("message")
-        if user_input:
-            response = chatbot.get_responses(user_input)
-            return JSONResponse(content={"response": response}, status_code=200)
+# @app.post("/message/chatbot")
+# async def chat(data: dict):
+#     try:
+#         user_input = data.get("message")
+#         if user_input:
+#             response = chatbot.get_responses(user_input)
+#             return JSONResponse(content={"response": response}, status_code=200)
         
-        else:
-            raise HTTPException(status_code=400, detail="No message provided")
-    except Exception as e:
-        print("Error during chat process:", e)
-        return JSONResponse(content={"error_occured": "An error occurred while processing your request. Please try again later or contact support for assistance."}, status_code=500)
+#         else:
+#             raise HTTPException(status_code=400, detail="No message provided")
+#     except Exception as e:
+#         print("Error during chat process:", e)
+#         return JSONResponse(content={"error_occured": "An error occurred while processing your request. Please try again later or contact support for assistance."}, status_code=500)
 
 
 if __name__ == "__main__":

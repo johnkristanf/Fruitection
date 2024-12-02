@@ -128,7 +128,7 @@ const ImagePagination: React.FC<ImagePaginationProps> = ({
 
   if(paginatedImages.length <= 0){
     return (
-      <div className='flex justify-center mt-12 font-semibold text-2xl text-white'>
+      <div className='flex justify-center mt-12 font-semibold text-2xl text-black'>
         <h1>No Dataset Images Available</h1>
       </div>
     )
@@ -137,12 +137,12 @@ const ImagePagination: React.FC<ImagePaginationProps> = ({
 
 
   return (
-    <div>
+    <div className='bg-gray-100 mt-3'>
       <div className='flex flex-wrap items-center justify-around'>
 
-        <div className='w-full ml-6 mt-6 mb-3 flex justify-between'>
+        <div className='w-full ml-6 mt-6 mb-3 flex justify-between text-black'>
 
-          <p className='text-xl font-semibold text-white'>
+          <p className='text-xl font-semibold '>
             {
               datasetImages.length > 1 
                 ? `Total Dataset Images: ${totalImages}` 
@@ -151,7 +151,7 @@ const ImagePagination: React.FC<ImagePaginationProps> = ({
           </p>
 
           
-          <div className={`flex items-center ${selectedKeys.length == 0 ? "justify-end" : ""} mr-5 gap-3 w-[40%] font-semibold text-white`}>
+          <div className={`flex items-center ${selectedKeys.length == 0 ? "justify-end" : ""} mr-5 gap-3 w-[40%] font-semibold mb-4`}>
 
             {
               selectedKeys.length > 0 ? (
@@ -175,7 +175,7 @@ const ImagePagination: React.FC<ImagePaginationProps> = ({
             {
               selectedKeys.length > 0 && (
                 <div 
-                  className="flex w-[40%] items-center gap-3 hover:opacity-75 hover:cursor-pointer"
+                  className="flex w-[40%] items-center gap-3 text-red-800 hover:opacity-75 hover:cursor-pointer"
                   onClick={handleImageDelete}
                 >
                   {<FontAwesomeIcon icon={faTrash} />}

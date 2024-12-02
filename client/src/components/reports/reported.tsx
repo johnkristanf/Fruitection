@@ -8,6 +8,7 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ReportedCases({ setMapCoor, setOpenReportsModal }: any) {
 
   const queryClient = useQueryClient();
@@ -74,11 +75,10 @@ function ReportedCases({ setMapCoor, setOpenReportsModal }: any) {
         <td className="py-4 px-6">{data.reporter_name}</td>
         <td className="py-4 px-6">{data.reporter_address}</td>
         <td className="py-4 px-6">
-          {data.city} {data.district}, {data.province}
+          {data.city} City, {data.street}, {data.province} 
         </td>
         
-        <td className="py-4 px-6">{data.mollusk_type}</td>
-        <td className="py-4 px-6">{data.status}</td>
+        <td className="py-4 px-6">{data.durian_disease_type}</td>
         <td className="py-4 px-6">{data.reportedAt}</td>
 
         <td className="py-4 px-6 flex gap-3">
@@ -169,8 +169,7 @@ function ReportedCases({ setMapCoor, setOpenReportsModal }: any) {
               <th scope="col" className="py-3 px-6">Reporter Name</th>
               <th scope="col" className="py-3 px-6">Reporter Address</th>
               <th scope="col" className="py-3 px-6">Reported Place</th>
-              <th scope="col" className="py-3 px-6">Mollusk Type</th>
-              <th scope="col" className="py-3 px-6">Status</th>
+              <th scope="col" className="py-3 px-6">Durian Disease Type</th>
               <th scope="col" className="py-3 px-6">Reported Date</th>
               <th scope="col" className="py-3 px-6">Actions</th>
             </tr>

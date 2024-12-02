@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { DeleteDatasetClass } from "../http/delete/dataset";
 import { DatasetClassTypes } from "../types/datasets";
 import ImagePagination from "../components/datasets/pagination";
+import { classNames } from "../utils/style";
 
 
 
@@ -24,6 +25,8 @@ function DataSetsPage() {
 
     const { data: dataset_query, isLoading } = useQuery("dataset_classes", FetchDatasetClasses);
     const datasets: DatasetClassTypes[] = dataset_query?.data;
+
+    console.log("datasets: ", datasets)
 
     const mutate = useMutation(DeleteDatasetClass, {
         onSuccess: () => {
@@ -76,10 +79,10 @@ function DataSetsPage() {
                 <FontAwesomeIcon
                    onClick={() => setisSidebarOpen(true)} 
                    icon={faBars} 
-                   className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer bg-black text-white p-2 rounded-md"
+                   className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer text-black p-2 rounded-md"
                 />
 
-                <div className="h-full w-full p-5 bg-gray-600 flex flex-col items-center gap-8 mt-12 rounded-md">
+                <div className="h-full w-full p-5  flex flex-col items-center gap-8 mt-12 rounded-md bg-gray-100">
 
                     {isOpenAddModal && (
                         <>
@@ -107,10 +110,10 @@ function DataSetsPage() {
 
                     {!datasetDetails && (
                         <div className="flex justify-between w-full">
-                            <h1 className="text-white font-bold text-2xl">Clam Scanner Dataset Classes</h1>
+                            <h1 className="text-green-600 font-bold text-4xl mb-3">Fruitection Dataset Classes</h1>
                             <button
                                 onClick={() => setIsOpenAddModal(true)}
-                                className="bg-blue-900 rounded-md font-bold p-2 text-white hover:opacity-75">
+                                className="bg-green-600 rounded-md font-bold p-2 text-white hover:opacity-75">
                                 <FontAwesomeIcon icon={faPlusCircle} /> Add New Class
                             </button>
                         </div>
@@ -131,12 +134,24 @@ function DataSetsPage() {
                                 />
                             ) : null}
 
+                            {
+                                datasets && datasets.length == 0 && (
+                                   <div className="w-full flex flex-col items-center justify-center mt-3">
+                                        <h1 className="text-3xl font-bold">No Dataset Classes Available</h1>
+                                        <p className="text-lg text-gray-400">Add new class to start your model training</p>
+                                    </div>
+                                )
+                            }
+
+                            
+
+
                             {datasets?.map((data) => (
                                 <div key={data.class_id}>
                                     {!datasetDetails && (
                                         <div className="rounded-md h-[8%] w-[30%] bg-white">
                                             <table className="text-sm text-left w-full text-gray-800 font-semibold dark:text-gray-400 h-full">
-                                                <thead className="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 font-bold">
+                                                <thead className="text-md text-black uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 font-bold">
                                                     <tr>
                                                         <th scope="col" className="py-3 px-6">Class</th>
                                                         <th scope="col" className="py-3 px-6">Actions</th>
@@ -144,18 +159,18 @@ function DataSetsPage() {
                                                 </thead>
 
                                                 <tbody>
-                                                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                                        <td className="py-4 px-6">{data.name}</td>
+                                                    <tr className="bg-white ">
+                                                        <td className="py-4 px-6 ">{data.name}</td>
                                                         <td className="py-4 px-6 flex gap-3">
                                                             <button
                                                                 onClick={() => handleDetailsData(data)}
-                                                                className="bg-blue-900 rounded-md font-bold p-2 text-white hover:opacity-75">
+                                                                className="bg-green-600 rounded-md font-bold p-2 text-white hover:opacity-75">
                                                                 Details
                                                             </button>
 
                                                             <button
                                                                 onClick={() => DeleteDatasetClassPopup(data.class_id, data.name)}
-                                                                className="bg-red-800 rounded-md font-bold p-2 text-white hover:opacity-75">
+                                                                className="bg-red-500 rounded-md font-bold p-2 text-white hover:opacity-75">
                                                                 Delete
                                                             </button>
                                                         </td>
@@ -208,7 +223,7 @@ function DataSetDetails({classDetailsData, setDatasetDetails, setisOpenUpload, s
 
                     <h1 
                         onClick={() => setDatasetDetails(false)}
-                        className="flex items-center gap-2 text-white font-bold text-2xl hover:text-black hover:cursor-pointer"
+                        className="flex items-center gap-2 text-green-600 font-bold text-2xl hover:text-black hover:cursor-pointer"
                         >
 
                         <FontAwesomeIcon 
@@ -220,8 +235,15 @@ function DataSetDetails({classDetailsData, setDatasetDetails, setisOpenUpload, s
                     </h1>
 
                     <div className="flex flex-col mb-2">
-                        <h1 className="text-white font-bold text-4xl">{classDetailsData?.name}</h1>
-                        <h1 className="text-white font-semibold text-md" > Status: {classDetailsData.status} </h1>
+                        <h1 className="text-green-600 font-bold text-4xl">{classDetailsData?.name}</h1>
+                        <h1 className={classNames(
+                            "font-semibold text-md",
+                            classDetailsData.status == "Critical" ? 'text-red-800': 'text-green-600'
+                        )} 
+                        > 
+                            Status: 
+                            {classDetailsData.status} 
+                        </h1>
                     </div>
 
                 </div>
@@ -229,7 +251,7 @@ function DataSetDetails({classDetailsData, setDatasetDetails, setisOpenUpload, s
                 <div className="flex gap-4 mb-6">
                     <button
                         onClick={() => setisOpenUpload(true)}
-                        className="bg-blue-900 rounded-md font-bold p-2 text-white hover:opacity-75">
+                        className="bg-green-600 rounded-md font-bold p-2 text-white hover:opacity-75">
                             <FontAwesomeIcon icon={faUpload}/> Upload 
                     </button>
 
@@ -237,7 +259,7 @@ function DataSetDetails({classDetailsData, setDatasetDetails, setisOpenUpload, s
                         classDetailsData.name !== "Invalid Image" ? (
                             <button
                                 onClick={() => setisOpenInfoModal(true)}
-                                className="bg-yellow-500 rounded-md font-bold p-2 text-white hover:opacity-75">
+                                className="bg-gray-600 rounded-md font-bold p-2 text-white hover:opacity-75">
                                 <FontAwesomeIcon icon={faExclamationCircle}/> Info
                             </button>
 
@@ -251,9 +273,10 @@ function DataSetDetails({classDetailsData, setDatasetDetails, setisOpenUpload, s
 
             { isLoading && (
                 <div className="flex justify-center mt-12">
-                    <h1 className="text-white text-2xl font-semibold">Loading Images....</h1> 
+                    <h1 className="text-black text-2xl font-semibold">Loading Images....</h1> 
                 </div>
             )}
+
 
             { image && (
                 <ImagePagination 
