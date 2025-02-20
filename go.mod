@@ -1,4 +1,4 @@
-module github.com/johnkristanf/clamscanner
+module github.com/johnkristianf/clamscanner
 
 go 1.22.1
 

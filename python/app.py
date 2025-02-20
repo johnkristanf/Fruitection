@@ -59,47 +59,6 @@ s3 = boto3.client(
 
 
 
-# def list_folders_and_images_in_dataset():
-#     try:
-#         response = s3.list_objects_v2(Bucket=BUCKET_NAME, Prefix=f"{DATASET_PREFIX}/")
-
-#         if 'Contents' in response:
-#             for obj in response['Contents']:
-#                 key = obj['Key']
-#                 if key.endswith('/'):
-#                     print(f"Folder: {key}")
-#                 else:
-#                     print(f"Image: {key}")
-#         else:
-#             print("No folders or images found in the datasets folder")
-
-#     except Exception as e:
-#         print(f"Error: {str(e)}")
-
-# list_folders_and_images_in_dataset()
-
-# def delete_all_objects():
-#     try:
-#         objects = s3.list_objects_v2(Bucket=BUCKET_NAME)
-
-#         if 'Contents' in objects:
-#             keys = [{'Key': obj['Key']} for obj in objects['Contents']]
-            
-#             s3.delete_objects(
-#                 Bucket=BUCKET_NAME,
-#                 Delete={
-#                     'Objects': keys
-#                 }
-#             )
-#             print(f"Deleted {len(keys)} objects from {BUCKET_NAME}")
-#         else:
-#             print(f"No objects found in {BUCKET_NAME}")
-#     except Exception as e:
-#         print(f"An error occurred: {str(e)}")
-
-# delete_all_objects()
-
-
 async def upload_image(image: UploadFile, datasetClass: str):
     s3_key = f"{DATASET_PREFIX}/{datasetClass}/{image.filename}"
 
@@ -297,8 +256,10 @@ async def train(data: dict):
     
     def train_model_async(data):
         model_version = data.get('version')
-        train_new_model(model_version)
-  
+        model_type = data.get('trainingModelType')
+
+        print("model_type: ", model_type)
+        train_new_model(model_version, model_type)
 
     thread = threading.Thread(target=train_model_async, args=(data,))
     thread.start()
@@ -317,9 +278,11 @@ async def scan(captured_image_file: UploadFile = File(...)):
         with open(file_path, "wb") as buffer:
             buffer.write(captured_image_file.file.read())
 
-        durian_disease_result = predict.mollusk_predict(file_path)
+        predicted_class, predicted_class_percentage = predict.durian_predict(file_path)
+
         response_data = {
-            "durian_disease_result": durian_disease_result
+            "durian_disease_result": predicted_class,
+            "predicted_disease_percentage": predicted_class_percentage
         }
         
         print(f'response_data {response_data}')

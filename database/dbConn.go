@@ -53,9 +53,13 @@ func DBconfig() (*SQL, error) {
 	sql.SetConnMaxLifetime(time.Hour * 1)
 	sql.SetConnMaxIdleTime(time.Minute * 30)
 
-	db.AutoMigrate(&User{}, &Reported_Cases{}, &Admin{}, &Datasets{}, &Model{})
+	db.AutoMigrate(&User{}, &Reported_Cases{}, &Admin{}, &Datasets{}, &Model{}, &Farms{})
 
 	if err := SeedAdminAccount(db); err != nil{
+		return nil, err
+	}
+
+	if err := SeedFarms(db); err != nil{
 		return nil, err
 	}
 
@@ -94,3 +98,31 @@ func SeedAdminAccount(db *gorm.DB) error {
     return nil
 }
 
+
+func SeedFarms(db *gorm.DB) (err error) {
+	
+	farms := [2]string{
+		"Cagangohan Farm", 
+		"J.P.Laurel Farm",
+	}
+
+	for _, farm := range farms {
+		var existingFarms Farms
+		result := db.Where("name = ?", farm).First(&existingFarms)
+		if result.Error != nil && result.Error != gorm.ErrRecordNotFound {
+			return result.Error
+		}
+
+		if result.Error == gorm.ErrRecordNotFound {
+			result := db.Create(&Farms{
+				Name: farm,
+			})
+
+			if result.Error != nil {
+				return result.Error
+			}
+		}
+	}
+
+	return err
+}

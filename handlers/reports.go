@@ -225,6 +225,7 @@ func (h *ReportHandler) FetchAllReportsHandler(w http.ResponseWriter, r *http.Re
 
 func (h *ReportHandler) FetchMapReportsHandler(w http.ResponseWriter, r *http.Request) error {
 
+	year := r.PathValue("year")
 	month := r.PathValue("month")
 	durian := r.PathValue("durian")
 
@@ -233,7 +234,7 @@ func (h *ReportHandler) FetchMapReportsHandler(w http.ResponseWriter, r *http.Re
 
 	var cases []*types.Fetch_Cases
 	
-	cases, err := h.DB_METHOD.FetchMapReportedCases(month, durian)
+	cases, err := h.DB_METHOD.FetchMapReportedCases(year, month, durian)
 	if err != nil {
 		return err
 	}
@@ -275,15 +276,15 @@ func (h *ReportHandler) FetchYearlyReportByCityHandler(w http.ResponseWriter, r 
 }
 
 
-func (h *ReportHandler) FetchYearlyReportByStreetHandler(w http.ResponseWriter, r *http.Request) error {
+func (h *ReportHandler) FetchYearlyReportByFarmHandler(w http.ResponseWriter, r *http.Request) error {
 
-	var yearlyReports []*types.YearlyReportsPerProvince
+	var yearlyReports []*types.YearlyReportsPerFarm
 
 	err := h.REDIS_METHOD.GET(&yearlyReports, "reports_street", r)
 
 	if err == redis.Nil {
 
-		yearlyReports, err := h.DB_METHOD.FetchPerStreetReports()
+		yearlyReports, err := h.DB_METHOD.FetchReportPerFarm()
 		if err != nil{
 			return err
 		}

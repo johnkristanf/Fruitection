@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/johnkristanf/clamscanner/types"
+	"gorm.io/gorm"
+
 )
 
 type Reported_Cases struct {
@@ -24,15 +26,22 @@ type REPORTED_DB_METHOD interface {
 	InsertReport(*types.Reported_Cases) (int64, error)
 
 	FetchReportedCases() ([]*types.Fetch_Cases, error)
-	FetchMapReportedCases(string, string) ([]*types.Fetch_Cases, error)
+	FetchMapReportedCases(string, string, string) ([]*types.Fetch_Cases, error)
 	
 	FetchPerCityReports() ([]*types.YearlyReportsPerCity, error)
-	FetchPerStreetReports() ([]*types.YearlyReportsPerProvince, error)
+	FetchReportPerFarm() ([]*types.YearlyReportsPerFarm, error)
 	FetchReportsPerDurianDisease() ([]*types.ReportsPerDurianDisease, error)
 	
 	DeleteReportCases(int64) error
 	UpdateReportStatus(int64) error
 }
+
+type Farms struct {
+	ID          int64   `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_reportedID"`
+	Name        string  `gorm:"not null"`
+	Count       int64   `gorm:"not null;default:0"`  
+}
+
 
 func (sql *SQL) InsertReport(reportCases *types.Reported_Cases) (int64, error) {
 
@@ -40,6 +49,7 @@ func (sql *SQL) InsertReport(reportCases *types.Reported_Cases) (int64, error) {
     if err != nil {
         return 0, err
     }
+
 
 	reportedAt := time.Now().In(location).Format("January 2, 2006 03:04 PM")
 
@@ -59,7 +69,13 @@ func (sql *SQL) InsertReport(reportCases *types.Reported_Cases) (int64, error) {
 		return 0, result.Error
 	}
 
+	if err := UpdateFarmReportCount(sql.DB, reportCases.FarmName);  err != nil {
+		return 0, fmt.Errorf("error updating farms count: %w", err)
+	}
+
 	lastInsertedID := reportedCases.ID
+
+	
 
 	return lastInsertedID, nil
 }
@@ -86,7 +102,7 @@ func (sql *SQL) FetchReportedCases() ([]*types.Fetch_Cases, error) {
 
 
 
-func (sql *SQL) FetchMapReportedCases(month string, durian string) ([]*types.Fetch_Cases, error) {
+func (sql *SQL) FetchMapReportedCases(year string, month string, durian string) ([]*types.Fetch_Cases, error) {
     var cases []*types.Fetch_Cases
 
     query := sql.DB.Table("reported_cases").
@@ -94,6 +110,10 @@ func (sql *SQL) FetchMapReportedCases(month string, durian string) ([]*types.Fet
         users.id AS user_id, users.full_name AS reporter_name, users.address AS reporter_address`).
         Joins("INNER JOIN users ON reported_cases.user_id = users.id")
 
+	if year != "All" {
+		query = query.Where("EXTRACT(YEAR FROM TO_TIMESTAMP(reported_at, 'Month DD, YYYY HH12:MI AM')) = ?", year)
+	}
+		
     if month != "All" {
         query = query.Where("reported_at ILIKE ?", "%"+month+"%")
     }
@@ -133,13 +153,13 @@ func (sql *SQL) FetchPerCityReports() ([]*types.YearlyReportsPerCity, error) {
 }
 
 
-func (sql *SQL) FetchPerStreetReports() ([]*types.YearlyReportsPerProvince, error) {
+func (sql *SQL) FetchReportPerFarm() ([]*types.YearlyReportsPerFarm, error) {
 	
-	var yearlyReports []*types.YearlyReportsPerProvince
+	var yearlyReports []*types.YearlyReportsPerFarm
 
-	result := sql.DB.Table("reported_cases").
-		Select(`street, EXTRACT(YEAR FROM TO_TIMESTAMP(reported_at, 'Month DD, YYYY HH:MI PM')) AS year, COUNT(id) AS reports_count `).
-		Group("street, year").
+	result := sql.DB.Table("farms").
+		Select(`name, count`).
+		Order("count DESC").
 		Find(&yearlyReports);
 
 		if result.Error != nil {
@@ -189,8 +209,15 @@ func (sql *SQL) UpdateReportStatus(report_id int64) error {
 	return nil
 }
 
+func UpdateFarmReportCount(DB *gorm.DB, farm string) error {
 
+	query := "UPDATE farms SET count = count + 1 WHERE name = ?"
+	if err := DB.Exec(query, farm).Error; err != nil {
+		return err
+	}
 
+	return nil
+}
 
 
 

@@ -8,6 +8,8 @@ type Reported_Cases struct{
 	Street 	  		  	  string      `json:"street"` 
 	DurianDiseaseType     string 	  `json:"durian_disease_type"` 
 	UserID     			  int64 	  `json:"user_id"` 
+	FarmName     		  string 	  `json:"farmName"` 
+
 }
 
 
@@ -34,10 +36,9 @@ type YearlyReportsPerCity struct{
 
 }
 
-type YearlyReportsPerProvince struct{
-	Street 			string	`json:"street"` 
-	Year 			string	`json:"year"` 
-	ReportsCount 	int64	`json:"reports_count"` 
+type YearlyReportsPerFarm struct{
+	Name 			string	`json:"farm"` 
+	Count 			int64	`json:"count"` 
 }
 
 type ReportsPerDurianDisease struct {

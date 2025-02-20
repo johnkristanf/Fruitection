@@ -6,7 +6,7 @@ export function ModelTable({ setNumberOfTrainedModels }: {
     setNumberOfTrainedModels: React.Dispatch<React.SetStateAction<number | undefined>>
 }) {
 
-    const models_query = useQuery("reported_cases", FetchModels);
+    const models_query = useQuery("trained_models", FetchModels);
     const models: FetchModelType[] = models_query.data?.data;
 
     if (models) setNumberOfTrainedModels(models.length);

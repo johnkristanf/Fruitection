@@ -9,7 +9,6 @@ import Swal from "sweetalert2";
 import { DeleteDatasetClass } from "../http/delete/dataset";
 import { DatasetClassTypes } from "../types/datasets";
 import ImagePagination from "../components/datasets/pagination";
-import { classNames } from "../utils/style";
 
 
 
@@ -143,46 +142,42 @@ function DataSetsPage() {
                                 )
                             }
 
-                            
 
+                            <div className="rounded-md w-full flex justify-center p-8 bg-gray-200">
+                                <table className="text-sm text-left w-full max-w-4xl text-gray-800 font-semibold dark:text-gray-400 h-full">
+                                    <thead className="text-md text-black uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 font-bold">
+                                        <tr>
+                                            <th scope="col" className="py-3 px-6">Class Name</th>
+                                            <th scope="col" className="py-3 px-6">Actions</th>
+                                        </tr>
+                                    </thead>
 
-                            {datasets?.map((data) => (
-                                <div key={data.class_id}>
-                                    {!datasetDetails && (
-                                        <div className="rounded-md h-[8%] w-[30%] bg-white">
-                                            <table className="text-sm text-left w-full text-gray-800 font-semibold dark:text-gray-400 h-full">
-                                                <thead className="text-md text-black uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 font-bold">
-                                                    <tr>
-                                                        <th scope="col" className="py-3 px-6">Class</th>
-                                                        <th scope="col" className="py-3 px-6">Actions</th>
-                                                    </tr>
-                                                </thead>
+                                    <tbody>
+                                        {datasets?.map((data) => (
+                                            <tr key={data.class_id} className="bg-white">
+                                                <td className="py-4 px-6">{data.name}</td>
+                                                <td className="py-4 px-6 flex gap-3">
+                                                    <button
+                                                        onClick={() => handleDetailsData(data)}
+                                                        className="bg-green-600 rounded-md font-bold p-2 text-white hover:opacity-75">
+                                                        Details
+                                                    </button>
 
-                                                <tbody>
-                                                    <tr className="bg-white ">
-                                                        <td className="py-4 px-6 ">{data.name}</td>
-                                                        <td className="py-4 px-6 flex gap-3">
-                                                            <button
-                                                                onClick={() => handleDetailsData(data)}
-                                                                className="bg-green-600 rounded-md font-bold p-2 text-white hover:opacity-75">
-                                                                Details
-                                                            </button>
-
-                                                            <button
-                                                                onClick={() => DeleteDatasetClassPopup(data.class_id, data.name)}
-                                                                className="bg-red-500 rounded-md font-bold p-2 text-white hover:opacity-75">
-                                                                Delete
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                                                    <button
+                                                        onClick={() => DeleteDatasetClassPopup(data.class_id, data.name)}
+                                                        className="bg-red-500 rounded-md font-bold p-2 text-white hover:opacity-75">
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
-                        )}
+
+
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -236,14 +231,14 @@ function DataSetDetails({classDetailsData, setDatasetDetails, setisOpenUpload, s
 
                     <div className="flex flex-col mb-2">
                         <h1 className="text-green-600 font-bold text-4xl">{classDetailsData?.name}</h1>
-                        <h1 className={classNames(
+                        {/* <h1 className={classNames(
                             "font-semibold text-md",
                             classDetailsData.status == "Critical" ? 'text-red-800': 'text-green-600'
                         )} 
                         > 
                             Status: 
                             {classDetailsData.status} 
-                        </h1>
+                        </h1> */}
                     </div>
 
                 </div>

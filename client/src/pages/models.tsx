@@ -4,7 +4,7 @@ import { SideBar } from '../components/navigation/sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRobot } from '@fortawesome/free-solid-svg-icons';
 // import { ModelDetailsModal } from '../components/modal/models';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import Swal from 'sweetalert2';
 import { Chart } from 'react-google-charts';
 // import { FetchModelType } from '../types/datasets';
@@ -32,8 +32,6 @@ interface TrainingMetrics {
 
 const ModelsPage: React.FC = () => {
   const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(false);
-  // const [isModelDetailsModalOpen, setIsModelDetailsModalOpen] = useState<boolean>(false);
-  // const [modelDetails, setModelDetails] = useState<FetchModelType>();
   const [numberOfTrainedModels, setNumberOfTrainedModels] = useState<number | undefined>(undefined);
   const [trainingMetrics, setTrainingMetrics] = useState<TrainingMetrics>({
     epochs: [],
@@ -44,8 +42,11 @@ const ModelsPage: React.FC = () => {
     class_names: []
   });
 
+  const queryClient = useQueryClient(); // Use the query client
+
   const [isTrainingComplete, setIsTrainingComplete] = useState<boolean>(false); 
   const [hasTrainingError, setHasTrainingError] = useState<boolean>(false); 
+  const [trainingModelType, setTrainingModelType] = useState<string>("resnet_50");
 
   useEffect(() => {
     socket.onmessage = (event) => {
@@ -105,12 +106,13 @@ const ModelsPage: React.FC = () => {
         title: "Training Has Completed",
       });
 
+      queryClient.invalidateQueries("trained_models");
       trainingMetrics.epochs.length = 0
       setIsTrainingComplete(false)
       setHasTrainingError(false)
     } 
 
-  }, [isTrainingComplete, trainingMetrics.epochs])
+  }, [isTrainingComplete, queryClient, trainingMetrics.epochs])
 
 
   const newModelVersion = numberOfTrainedModels != undefined ? (numberOfTrainedModels + 1).toString() : '1';
@@ -128,6 +130,20 @@ const ModelsPage: React.FC = () => {
     
     chartData.unshift(['Epoch', 'Accuracy', 'Val Accuracy', 'Loss', 'Val Loss']);
   }
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setTrainingModelType(event.target.value); 
+  };
+
+  const handleTrainModel = () => {
+    // Define the training data to send
+    const trainingData = {
+        version: newModelVersion,
+        trainingModelType: trainingModelType, // Select the model type from state
+    };
+
+    mutate(trainingData);
+};
 
   console.log("trainingMetrics: ", trainingMetrics);
 
@@ -150,12 +166,23 @@ const ModelsPage: React.FC = () => {
           <div className="w-[80%] rounded-md p-5 flex flex-col gap-5 bg-gray-100">
             <div className="flex justify-between mb-3">
               <h1 className="text-green-600 font-bold text-4xl">Fruitection Trained Models</h1>
-              <button
-                onClick={() => mutate(newModelVersion)}
-                className="bg-green-600 rounded-md p-2 text-white font-bold flex items-center gap-2 hover:opacity-75 hover:cursor-pointer"
-              >
-                <FontAwesomeIcon icon={faRobot} /> Train New Model
-              </button>
+
+              <div className="flex items-center gap-3 font-semibold">
+                <select value={trainingModelType} onChange={handleSelectChange} className='p-2 bg-gray-200 rounded-md focus:outline-none'>
+                  <option value="resnet_50">Resnet 50</option>
+                  <option value="mobile_net">MobileNet V2</option>
+                  <option value="efficient_net">EfficientNet B6</option>
+                </select>
+
+                <button
+                  onClick={handleTrainModel}
+                  className="bg-green-600 rounded-md p-2 text-white font-bold flex items-center gap-2 hover:opacity-75 hover:cursor-pointer"
+                >
+                  <FontAwesomeIcon icon={faRobot} /> Train New Model
+                </button>
+
+              </div>
+              
             </div>
 
             {trainingMetrics && trainingMetrics.epochs.length > 0 && !hasTrainingError && !isTrainingComplete && (

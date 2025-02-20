@@ -11,8 +11,41 @@ import { ReportedCasesTypes } from '../../types/reported';
 import { SetViewOnClickProps } from '../../types/map';
 import Swal from 'sweetalert2';
 
-const redIcon = new L.Icon({
-  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+// const redIcon = new L.Icon({
+//   iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+//   iconSize: [25, 41],
+//   iconAnchor: [12, 41],
+//   popupAnchor: [1, -34],
+//   tooltipAnchor: [16, -28],
+//   shadowSize: [41, 41],
+// });
+
+// const greenIcon = new L.Icon({
+//   iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+//   iconSize: [25, 41],
+//   iconAnchor: [12, 41],
+//   popupAnchor: [1, -34],
+//   tooltipAnchor: [16, -28],
+//   shadowSize: [41, 41],
+// });
+
+// const redCircleOptions: L.CircleMarkerOptions = {
+//   color: 'red',
+//   fillColor: 'transparent',
+//   fillOpacity: 0,
+//   weight: 1,
+// };
+
+// const greenCircleOptions: L.CircleMarkerOptions = {
+//   color: 'green',
+//   fillColor: 'transparent',
+//   fillOpacity: 0,
+//   weight: 1,
+// };
+
+
+const orangeIcon = new L.Icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -20,8 +53,8 @@ const redIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-const greenIcon = new L.Icon({
-  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+const blackIcon = new L.Icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -29,15 +62,15 @@ const greenIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-const redCircleOptions: L.CircleMarkerOptions = {
-  color: 'red',
+const orangeCircleOptions: L.CircleMarkerOptions = {
+  color: 'orange',
   fillColor: 'transparent',
   fillOpacity: 0,
   weight: 1,
 };
 
-const greenCircleOptions: L.CircleMarkerOptions = {
-  color: 'green',
+const blackCircleOptions: L.CircleMarkerOptions = {
+  color: 'black',
   fillColor: 'transparent',
   fillOpacity: 0,
   weight: 1,
@@ -56,12 +89,13 @@ const monthNames = [
 
 function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
   
+  const [selectedYear, setSelectedYear] = useState<string>("All");
   const [selectedMonth, setSelectedMonth] = useState<string>("All");
   const [selectedDurian, setSelectedDurian] = useState<string>("All");
 
   const reports_query = useQuery(
-    ['reported_cases', selectedMonth, selectedDurian],
-    () => FetchMapReports({ month: selectedMonth, durian: selectedDurian }),
+    ['reported_cases', selectedYear, selectedMonth, selectedDurian],
+    () => FetchMapReports({ year: selectedYear, month: selectedMonth, durian: selectedDurian }),
     {
       onSuccess: () => {
         Swal.close(); 
@@ -97,28 +131,37 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
   console.log("reports_query ", reports_query);
 
   console.log("Selected Month: ", selectedMonth);
-console.log("Selected Durian: ", selectedDurian);
+  console.log("Selected Durian: ", selectedDurian);
+  console.log("Selected Year: ", selectedYear);
 
 
   return (
     <div className="h-screen w-full mt-10 pb-20">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-gray-700 font-bold text-3xl">Reported Durian Disease Map</h1>
+      <div className="flex items-center justify-between mb-6">
+        {/* <h1 className="text-gray-700 font-bold text-3xl">Reports Map</h1> */}
+        <h1 className="text-green-600 font-bold text-4xl">Fruitection Reports Map</h1>
+
 
         <div className="flex items-end justify-center gap-5 w-1/2">
           <div className="flex flex-col justify-center w-full gap-2">
-            <h1 className="font-bold text-center">Filter Reports by</h1>
+            <h1 className="font-bold text-center">View Reports by</h1>
 
             <div className="flex gap-2">
 
-              {/* <select
-                className="bg-blue-900 text-white font-bold rounded-md focus:outline-none p-2"
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
+
+              <select
+                className="bg-green-600 text-white font-bold rounded-md focus:outline-none p-2"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
               >
-                <option>In Progress</option>
-                <option>Resolved</option>
-              </select> */}
+                {Array.from({ length: new Date().getFullYear() - 2024 + 1 }, (_, i) => 2024 + i)
+                  .reverse()
+                  .map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                ))}
+              </select>
 
               <select
                 className="bg-green-600 text-white font-bold rounded-md focus:outline-none p-2"
@@ -143,7 +186,7 @@ console.log("Selected Durian: ", selectedDurian);
             </div>
           </div>
           <button onClick={() => setOpenReportsModal(true)} className="rounded-md p-2 text-white font-bold bg-green-600 w-full hover:opacity-75 hover:cursor-pointer">
-            All Reported Cases
+            View Reports
           </button>
         </div>
       </div>
@@ -154,8 +197,8 @@ console.log("Selected Durian: ", selectedDurian);
           <SetViewOnClick MapCoor={MapCoor} />
 
           {reports?.map((data) => {
-            const icon = data.status === 'Resolved' ? greenIcon : redIcon;
-            const circleOptions = data.status === 'Resolved' ? greenCircleOptions : redCircleOptions;
+            const icon = data.durian_disease_type === 'Durian Blight' ? orangeIcon : blackIcon;
+            const circleOptions = data.durian_disease_type === 'Durian Blight' ? orangeCircleOptions : blackCircleOptions;
 
             return (
               <div key={data.report_id}>
@@ -185,19 +228,22 @@ console.log("Selected Durian: ", selectedDurian);
           })}
         </MapContainer>
 
-        {/* <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg" style={{ zIndex: 9999 }}>
+        {/* Floating Legend */}
+        <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg" style={{ zIndex: 9999 }}>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <img src="/img/red_marker.png" width={20} height={30} />
-              <h1 className="text-sm">In Progress Cases</h1>
+              <img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png" width={20} height={30} />
+              <h1 className="text-sm">Durian Blight</h1>
             </div>
 
             <div className="flex items-center gap-2">
-              <img src="/img/green_marker.png" width={20} height={30} />
-              <h1 className="text-sm">Resolved Cases</h1>
+              <img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png" width={20} height={30} />
+              <h1 className="text-sm">Durian Spot</h1>
             </div>
           </div>
-        </div> */}
+        </div>
+
+       
       </div>
     </div>
   );

@@ -14,8 +14,7 @@ type Mollusk struct {
 }
 
 type DurianDetails struct {
-	Name            string  `json:"mollusk_name"`
-	ScientificName	string	`json:"scientific_name"`
+	Name            string  `json:"durian_name"`
 	Description		string	`json:"description"`
 	Status          string  `json:"status"`
 }

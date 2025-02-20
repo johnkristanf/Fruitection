@@ -6,18 +6,12 @@ from keras._tf_keras.keras import regularizers
 from keras import Sequential
 from keras._tf_keras.keras.utils import image_dataset_from_directory
 
-from keras._tf_keras.keras.applications import ResNet50
+from keras._tf_keras.keras.applications import ResNet50, MobileNetV2, EfficientNetB6
 from keras._tf_keras.keras.applications.resnet import preprocess_input
 
 from keras._tf_keras.keras.optimizers import Adam
+from keras import mixed_precision
 
-# import tensorflow as tf
-# from tensorflow.keras import layers, regularizers, Sequential
-# from tensorflow.keras.preprocessing import image_dataset_from_directory
-# from tensorflow.keras.applications import ResNet50
-# from tensorflow.keras.applications.resnet import preprocess_input
-# from tensorflow.keras.optimizers import Adam
-# from tensorflow.keras.models import load_mode
 
 import json
 
@@ -40,16 +34,23 @@ from dotenv import load_dotenv
 from io import BytesIO
 from PIL import Image
 
+
+tf.config.optimizer.set_jit(True)
+
+policy = mixed_precision.Policy('mixed_float16')
+mixed_precision.set_global_policy(policy)
+
+
 load_dotenv(os.path.join(os.path.dirname(__file__), '../.env'))
 
 s3_client = boto3.client(
     's3',
     aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
     aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-    region_name='us-east-1'
+    region_name='ap-southeast-1'
 )
 
-BUCKET_NAME = 'clamscanner-bucket'
+BUCKET_NAME = 'fruitection-s3-bucket'
 DATASET_PREFIX = 'datasets/'
 train = TrainDatabaseOperations()
 
@@ -80,7 +81,7 @@ def fetch_s3_images(dataset_class):
                 response = s3_client.get_object(Bucket=BUCKET_NAME, Key=key)
                 image_data = response['Body'].read()
                 img = Image.open(BytesIO(image_data)).convert('RGB')
-                img = img.resize((224, 224))
+                img = img.resize((180, 180))
 
                 img = np.expand_dims(np.array(img), axis=0)
                 img = preprocess_input(img)  
@@ -204,17 +205,40 @@ class CustomCallback(tf.keras.callbacks.Callback):
 
 
 
-def train_save_model(train_ds, validation_ds, num_classes: int, class_names: list[str], model_version: str):
+def train_save_model(train_ds, validation_ds, num_classes: int, class_names: list[str], model_version: str, model_type: str):
 
-    base_model = ResNet50(
-        include_top=False,
-        weights='imagenet',
-        input_shape=(224, 224, 3),
-        pooling='avg'
-    )
+    base_model = None
 
-    for layer in base_model.layers:
-        layer.trainable = False
+    if model_type == "resnet_50":
+        base_model = ResNet50(
+            include_top=False,
+            weights='imagenet',
+            input_shape=(180, 180, 3),
+            pooling='avg'
+        )
+
+    elif model_type == "mobile_net":
+        base_model = MobileNetV2(
+            include_top=False,
+            weights='imagenet',
+            input_shape=(180, 180, 3),
+            pooling='avg'
+        )
+
+    else:
+        base_model = EfficientNetB6(
+            include_top=False,
+            weights='imagenet',
+            input_shape=(180, 180, 3),
+            pooling='avg'
+        )
+
+
+    print("model_type: ", model_type)
+
+
+    for layer in base_model.layers[-150:]:
+        layer.trainable = True
 
     model = Sequential([
         base_model,
@@ -234,7 +258,7 @@ def train_save_model(train_ds, validation_ds, num_classes: int, class_names: lis
     )
 
 
-    for layer in base_model.layers[-10:]:
+    for layer in base_model.layers[-150:]:
         layer.trainable = True
 
 
@@ -250,27 +274,27 @@ def train_save_model(train_ds, validation_ds, num_classes: int, class_names: lis
 
     fine_tune_history = model.fit(
         train_ds,
-        epochs=20,
+        epochs=10,
         validation_data=validation_ds,
         callbacks=[early_stopping, lr_scheduler, model_checkpoint, custom_callback]
     )
 
     model.summary()
 
-    model.save(f'./models/ClamScanner_v{model_version}.keras')
+    model.save(f'./models/Fruitection_v{model_version}.keras')
 
     return fine_tune_history
 
 
 
-def train_new_model(model_version):
+def train_new_model(model_version, model_type):
     train_ds, val_ds, test_ds, num_classes, class_names = load_dataset()
 
     train_ds = prepare(train_ds, shuffle=True, augment=True)
     val_ds =   prepare(val_ds)
     test_ds =  prepare(test_ds)
 
-    fine_tune_history = train_save_model(train_ds, val_ds, num_classes, class_names, model_version)
+    fine_tune_history = train_save_model(train_ds, val_ds, num_classes, class_names, model_version, model_type)
 
     # eval.plot_accuracy_loss(fine_tune_history)
     # eval.evaluate_model(test_ds, model_version)

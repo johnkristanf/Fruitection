@@ -1,10 +1,10 @@
 import { useQueryClient } from "react-query";
-import { useEffect, useRef, useState, lazy, Suspense, useCallback } from "react";
+import { useEffect, useState, lazy, Suspense, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
-import { SideBar } from "../components/navigation/sidebar";
 import { WS_URL_GO } from "../http/envPaths";
+import { SideBar } from "../components/navigation/sidebar";
 
 const ReportedCases = lazy(() => import("../components/reports/reported"));
 const Map = lazy(() => import("../components/reports/map"));
@@ -44,13 +44,12 @@ const InitializeWSConnection = (setReports: React.Dispatch<React.SetStateAction<
 const ReportsPage: React.FC = () => {
     const queryClient = useQueryClient();
 
-    const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(false);
     const [OpenReportsModal, setOpenReportsModal] = useState<boolean>(false);
 
     const [MapCoor, setMapCoor] = useState<number[]>([7.3087, 125.6841]);
     const [Reports, setReports] = useState<number | undefined>();
+    const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(false)
 
-    const alertRef = useRef<HTMLAudioElement>(null);
 
     useEffect(() => {
         InitializeWSConnection(setReports);
@@ -67,7 +66,6 @@ const ReportsPage: React.FC = () => {
     useEffect(() => {
 
         if (Reports && Reports > 0) {
-            // playAudioLoop();
             Swal.close();
             
             Swal.fire({
@@ -93,6 +91,11 @@ const ReportsPage: React.FC = () => {
 
     return (
         <div className="flex flex-col h-full w-full">
+
+            { isSidebarOpen && <SideBar setisSidebarOpen={setisSidebarOpen} /> }
+
+           
+            
             <Suspense fallback={<div>Loading...</div>}>
                 {OpenReportsModal && (
                     <> 
@@ -112,19 +115,15 @@ const ReportsPage: React.FC = () => {
                 )}
             </Suspense>
 
-                {isSidebarOpen && <SideBar setisSidebarOpen={setisSidebarOpen} />}
 
                 <div className="h-full w-full flex flex-col items-start p-8">
+
                     <FontAwesomeIcon
                         onClick={() => setisSidebarOpen(true)} 
                         icon={faBars} 
-                        className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer  text-black p-2 rounded-md"
+                        className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer text-black p-2 rounded-md"
                     />
-
-                    <audio ref={alertRef} controls style={{display: 'none'}}>
-                        <source src="/public/Drop.mp3" type="audio/mpeg" />
-                        Your browser does not support the audio element.
-                    </audio>
+                    
                     <Suspense fallback={
                         <div className="w-full h-screen flex justify-center items-center ">
                             <div className="text-4xl font-bold">Loading Reports Map....</div>
@@ -132,7 +131,7 @@ const ReportsPage: React.FC = () => {
                     }
                     >
 
-                     <Map setMapCoor={setMapCoor} MapCoor={MapCoor} setOpenReportsModal={setOpenReportsModal} />
+                    <Map setMapCoor={setMapCoor} MapCoor={MapCoor} setOpenReportsModal={setOpenReportsModal} />
                     </Suspense>
 
                 </div>

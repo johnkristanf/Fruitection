@@ -15,13 +15,14 @@ export function FetchReports(): Promise<AxiosResponse<any, any>> {
 }
 
 
-export function FetchMapReports({ month, durian }: FetchMapReportsParams): Promise<AxiosResponse<any, any>> {
+export function FetchMapReports({ year, month, durian }: FetchMapReportsParams): Promise<AxiosResponse<any, any>> {
 
+    console.log("year: ", year);
     console.log("month: ", month);
     console.log("durian: ", durian);
     
     try {
-        return axios.get(`${DOMAIN_NAME_GO}/fetch/map/reports/${month}/${encodeURIComponent(durian)}`, {
+        return axios.get(`${DOMAIN_NAME_GO}/fetch/map/reports/${year}/${month}/${encodeURIComponent(durian)}`, {
             withCredentials: true
         });
     } catch (error) {
@@ -43,9 +44,9 @@ export function FetchYearlyReportsPerCity(): Promise<AxiosResponse<any, any>> {
     }
 }
 
-export function FetchYearlyReportsPerStreet(): Promise<AxiosResponse<any, any>> {
+export function FetchYearlyReportsPerFarm(): Promise<AxiosResponse<any, any>> {
     try {
-        return axios.get(`${DOMAIN_NAME_GO}/fetch/reports/street`, {
+        return axios.get(`${DOMAIN_NAME_GO}/fetch/reports/farm`, {
             withCredentials: true
         });
     } catch (error) {

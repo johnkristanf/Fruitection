@@ -25,10 +25,9 @@ export type YearlyReportPerCity = {
 }
 
 
-export type YearlyReportPerStreet = {
-    street: string
-    year: string,
-    reports_count: number
+export type YearlyReportPerFarm = {
+    farm: string
+    count: string,
 }
 
 export type ReportsPerMollusk = {

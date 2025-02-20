@@ -13,7 +13,7 @@ predict = PredictDatabaseOperations()
 
 class ClamPrediction():
     def __init__(self):
-        self.model_path = os.path.abspath("./models/durian_models.tflite")
+        self.model_path = os.path.abspath("./models/resnet50_model.tflite")
         self.model = self.load_tflite_model()
 
     def load_tflite_model(self):
@@ -37,7 +37,7 @@ class ClamPrediction():
         img = preprocess_input(np.array(img)) 
         return np.expand_dims(img, axis=0)
 
-    def mollusk_predict(self, image_path):
+    def durian_predict(self, image_path):
         print("PREDICT")
         
         preprocessed_image = self.resize_and_preprocess_image(image_path)
@@ -55,16 +55,24 @@ class ClamPrediction():
         predictions = self.model.get_tensor(output_index)
         print("Predictions:", predictions)
 
-        # CLASSES = ['Blood Clam', 'BullMouth Helmet', 'Horn Snail', 'Invalid Image', 'Mussel', 'Oyster', 'Scaly Clam', 'Tiger Cowrie']
         # CLASSES = self.load_dataset_classes()
 
         CLASSES = ['Durian Spot', 'Durian blight', 'Healthy', 'Mature', 'Unknown', 'Unripe']
         print("Classes:", CLASSES)
 
-        predicted_class = CLASSES[np.argmax(predictions)]
-        print("Predicted class:", predicted_class)
+        predictions_flat = predictions.flatten()  # Flatten the 2D array to 1D
+        predictions_percentage = predictions_flat * 100  
+        print("Predictions in percentage:", predictions_percentage)
 
-        return predicted_class
+        predicted_class_index = np.argmax(predictions_flat) 
+        predicted_class = CLASSES[predicted_class_index] 
+        predicted_class_percentage = predictions_percentage[predicted_class_index] 
+        predicted_class_percentage_str = f"{predicted_class_percentage:.2f}%"
+
+        print(f"Predicted class: {predicted_class}")
+        print(f"Predicted class percentage: {predicted_class_percentage_str}")
+
+        return predicted_class, predicted_class_percentage_str
     
 
     def load_validate_image_file(self, request, jsonify):

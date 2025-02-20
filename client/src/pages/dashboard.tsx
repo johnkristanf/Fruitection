@@ -4,7 +4,6 @@ import { SideBar } from "../components/navigation/sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 
-
 function DashboardPage(){
 
     const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(false)
@@ -28,8 +27,9 @@ function DashboardPage(){
                     <h1 className="text-green-600 font-bold text-4xl">Fruitection Dashboard</h1>
                     <Charts />
 
-                </div>   
+                </div>  
 
+                 
             </div>
 
             

@@ -10,6 +10,7 @@ export interface MapProps {
   
 
 export interface FetchMapReportsParams {
+    year: string;
     month: string;
     durian: string;
 }
