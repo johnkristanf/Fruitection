@@ -3,7 +3,6 @@ import { ModelTable } from '../components/models/model_table';
 import { SideBar } from '../components/navigation/sidebar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRobot } from '@fortawesome/free-solid-svg-icons';
-// import { ModelDetailsModal } from '../components/modal/models';
 import { useMutation, useQueryClient } from 'react-query';
 import Swal from 'sweetalert2';
 import { Chart } from 'react-google-charts';
@@ -151,10 +150,7 @@ const ModelsPage: React.FC = () => {
     <div className="flex flex-col h-full w-full">
       {isSidebarOpen && <SideBar setisSidebarOpen={setisSidebarOpen} />}
 
-      {/* {isModelDetailsModalOpen && modelDetails && (
-        <ModelDetailsModal setisModelDetailsOpen={setIsModelDetailsModalOpen} modelDetails={modelDetails} />
-      )} */}
-
+   
       <div className="h-full w-full flex flex-col items-start p-8">
           <FontAwesomeIcon
             onClick={() => setisSidebarOpen(true)} 
