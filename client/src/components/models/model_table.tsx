@@ -30,8 +30,8 @@ export function ModelTable({ setNumberOfTrainedModels }: {
                             models.map((item) => (
                                 <tr key={item.model_id} className="text-black font-bold">
                                     <td scope="col" className="py-3 px-6"> {item.version} </td>
-                                    <td scope="col" className="py-3 px-6"> {item.train_acc} </td>
-                                    <td scope="col" className="py-3 px-6"> {item.train_loss} </td>
+                                    <td scope="col" className="py-3 px-6"> { (Math.max(item.train_acc) * 100).toFixed(2) } %</td>
+                                    <td scope="col" className="py-3 px-6"> { (Math.max(item.train_loss) * 100).toFixed(2) } %</td>
                                     <td scope="col" className="py-3 px-6"> {item.trained_at} </td>
                                 </tr>
                             ))
