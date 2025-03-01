@@ -180,7 +180,7 @@ function ReportedDurianDiseaseTypes() {
         reports.forEach((item) => {
             const ddt = item.durian_disease_type;
             
-            const color = ddt === 'Durian Blight' ? "#b87333" : "#000000";
+            const color = ddt.toLocaleLowerCase() === 'durian blight' ? "#b87333" : "#000000";
             data.push([ddt, item.durian_disease_count, color]);
         });
     }

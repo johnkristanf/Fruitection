@@ -197,9 +197,11 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
           <SetViewOnClick MapCoor={MapCoor} />
 
           {reports?.map((data) => {
-            const icon = data.durian_disease_type === 'Durian Blight' ? orangeIcon : blackIcon;
-            const circleOptions = data.durian_disease_type === 'Durian Blight' ? orangeCircleOptions : blackCircleOptions;
-
+            
+            const diseaseType = data.durian_disease_type.toLowerCase(); 
+            const icon = diseaseType === 'durian blight' ? orangeIcon : blackIcon;
+            const circleOptions = diseaseType === 'durian blight' ? orangeCircleOptions : blackCircleOptions;
+        
             return (
               <div key={data.report_id}>
                 <Marker
