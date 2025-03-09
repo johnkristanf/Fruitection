@@ -155,7 +155,7 @@ function DataSetsPage() {
                                     <tbody>
                                         {datasets?.map((data) => (
                                             <tr key={data.class_id} className="bg-white">
-                                                <td className="py-4 px-6">{data.name}</td>
+                                                <td className="py-4 px-6">{data.name.toLowerCase() === 'durian blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : data.name.toLowerCase() === 'durian spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)': data.name}</td>
                                                 <td className="py-4 px-6 flex gap-3">
                                                     <button
                                                         onClick={() => handleDetailsData(data)}
@@ -208,6 +208,9 @@ function DataSetDetails({classDetailsData, setDatasetDetails, setisOpenUpload, s
     console.log("image: ", image)
     
 
+    const formattedDdt = classDetailsData.name.toLowerCase() === 'durian blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : classDetailsData.name.toLowerCase() === 'durian spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' : classDetailsData.name;
+
+
 
     return(
         <div className="flex flex-col w-full h-full">
@@ -230,7 +233,7 @@ function DataSetDetails({classDetailsData, setDatasetDetails, setisOpenUpload, s
                     </h1>
 
                     <div className="flex flex-col mb-2">
-                        <h1 className="text-green-600 font-bold text-4xl">{classDetailsData?.name}</h1>
+                        <h1 className="text-green-600 font-bold text-4xl">{formattedDdt}</h1>
                         {/* <h1 className={classNames(
                             "font-semibold text-md",
                             classDetailsData.status == "Critical" ? 'text-red-800': 'text-green-600'

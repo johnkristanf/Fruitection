@@ -142,7 +142,7 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
         <h1 className="text-green-600 font-bold text-4xl">Fruitection Reports Map</h1>
 
 
-        <div className="flex items-end justify-center gap-5 w-1/2">
+        <div className="flex items-end justify-center gap-5 w-[60%]">
           <div className="flex flex-col justify-center w-full gap-2">
             <h1 className="font-bold text-center">View Reports by</h1>
 
@@ -180,8 +180,8 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
                 value={selectedDurian}
                 onChange={(e) => setSelectedDurian(e.target.value)}
               >
-                <option>Durian Blight</option>
-                <option>Durian Spot</option>
+                <option value={'Durian Blight'}>Phytophthora Palmivora Fruit Rot (Late Stage)</option>
+                <option value={'Durian Spot'}>Phytophthora Palmivora Fruit Rot (Early Stage)</option>
               </select>
             </div>
           </div>
@@ -201,7 +201,9 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
             const diseaseType = data.durian_disease_type.toLowerCase(); 
             const icon = diseaseType === 'durian blight' ? orangeIcon : blackIcon;
             const circleOptions = diseaseType === 'durian blight' ? orangeCircleOptions : blackCircleOptions;
+            const formattedDdt = diseaseType === 'durian blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : diseaseType === 'durian spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' : data.durian_disease_type;
         
+
             return (
               <div key={data.report_id}>
                 <Marker
@@ -213,7 +215,7 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
                 >
                   <Tooltip>
                     {data.reporter_name} <br />
-                    {data.durian_disease_type} <br />
+                    {formattedDdt} <br />
                     {data.city} City, {data.street}, {data.province} <br />
                     {data.reportedAt} <br />
                     {data.latitude}° N, {data.longitude}° E
@@ -235,12 +237,12 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png" width={20} height={30} />
-              <h1 className="text-sm">Durian Blight</h1>
+              <h1 className="text-sm">Phytophthora Palmivora Fruit Rot (Late Stage)</h1>
             </div>
 
             <div className="flex items-center gap-2">
               <img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png" width={20} height={30} />
-              <h1 className="text-sm">Durian Spot</h1>
+              <h1 className="text-sm">Phytophthora Palmivora Fruit Rot (Early Stage)</h1>
             </div>
           </div>
         </div>
