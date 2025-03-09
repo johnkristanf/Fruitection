@@ -180,7 +180,7 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
                 value={selectedDurian}
                 onChange={(e) => setSelectedDurian(e.target.value)}
               >
-                <option value={'Durian Blight'}>Phytophthora Palmivora Fruit Rot (Late Stage)</option>
+                <option value={'Durian blight'}>Phytophthora Palmivora Fruit Rot (Late Stage)</option>
                 <option value={'Durian Spot'}>Phytophthora Palmivora Fruit Rot (Early Stage)</option>
               </select>
             </div>

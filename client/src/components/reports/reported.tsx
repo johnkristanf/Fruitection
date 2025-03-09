@@ -78,7 +78,7 @@ function ReportedCases({ setMapCoor, setOpenReportsModal }: any) {
           {data.city} City, {data.street}, {data.province} 
         </td>
         
-        <td className="py-4 px-6">{data.durian_disease_type}</td>
+        <td className="py-4 px-6">{data.durian_disease_type.toLowerCase() === 'durian blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : data.durian_disease_type.toLowerCase() === 'durian spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' : data.durian_disease_type}</td>
         <td className="py-4 px-6">{data.reportedAt}</td>
 
         <td className="py-4 px-6 flex gap-3">
