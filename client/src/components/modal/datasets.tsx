@@ -89,7 +89,7 @@ export const AddNewDatasetModal = ({setisOpenAddModal}: {
 
                 <textarea 
                     {...register("description", { required: true })}
-
+                    required
                     rows={4} 
                     cols={50} 
                     className="rounded-md bg-gray-300 placeholder-gray-500 font-semibold p-2 w-[60%] focus:outline-blue-950" 
@@ -97,7 +97,16 @@ export const AddNewDatasetModal = ({setisOpenAddModal}: {
                 />
 
 
-                <select 
+                <textarea 
+                    {...register("status", { required: true })}
+                    required
+                    rows={4} 
+                    cols={50} 
+                    className="rounded-md bg-gray-300 placeholder-gray-500 font-semibold p-2 w-[60%] focus:outline-blue-950" 
+                    placeholder="Treatment"
+                />  
+
+                {/* <select 
                     {...register("status", { required: true })} 
                     className="rounded-md bg-gray-300 placeholder-gray-500 font-semibold p-2 w-[60%] focus:outline-blue-950"
                 >
@@ -105,7 +114,7 @@ export const AddNewDatasetModal = ({setisOpenAddModal}: {
                     <option value="N/A">N/A</option>
                     <option value="Critical">Critical</option>
                     <option value="Healthy">Healthy</option>
-                </select>
+                </select> */}
 
                 <button type="submit" className="text-white font-bold bg-green-600 w-[60%] rounded-md p-3 hover:opacity-75">Add</button>
 

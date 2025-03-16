@@ -33,6 +33,7 @@ export function Charts() {
                     <ReportedPerFarm />
                 </Suspense>
 
+
             </div>
 
             <Suspense fallback={<ThreeCircles color="#E53E3E" height={80} width={80} />}>
@@ -171,23 +172,28 @@ function ReportedDurianDiseaseTypes() {
 
     console.log("reports per durian type", reports);
 
-    
-    const data: (string | number | { role: string; })[][] = [
-        ["Durian Type", "Report Count", { role: "style" }] // Ensure this header structure is correct
+    // Updated data structure for LineChart
+    const data: (string | number)[][] = [
+        ["Durian Type", "Report Count"] // Headers without "style"
     ];
 
     if (reports.length > 0) {
         reports.forEach((item) => {
             const ddt = item.durian_disease_type;
 
-            const formattedDdt = ddt.toLowerCase() === 'durian blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : ddt.toLowerCase() === 'durian spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' : ddt;
-            
-            const color = ddt.toLocaleLowerCase() === 'durian blight' ? "#b87333" : "#000000";
-            data.push([formattedDdt, item.durian_disease_count, color]);
+            // Format disease names
+            const formattedDdt =
+                ddt.toLowerCase() === 'durian blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' :
+                ddt.toLowerCase() === 'durian spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' :
+                ddt;
+
+            data.push([formattedDdt, item.durian_disease_count]); // Remove color field
         });
     }
 
     const options = {
+        title: "Durian Disease Types",
+        curveType: "function", 
         legend: { position: "none" },
     };
 
@@ -196,7 +202,7 @@ function ReportedDurianDiseaseTypes() {
             <h1 className="text-gray-600 font-bold text-2xl">Durian Disease Types</h1>
             <h1 className="text-gray-400 text-md mb-4">Yearly Reported Cases</h1>
 
-             {reports_query.isLoading ? (
+            {reports_query.isLoading ? (
                 <div className="h-[70%] w-full flex items-center justify-center">
                     <ThreeCircles color="#E53E3E" height={80} width={80} />
                 </div>
@@ -204,20 +210,21 @@ function ReportedDurianDiseaseTypes() {
                 <>
                     {reports.length === 0 ? (
                         <div className="h-[70%] w-full flex items-center justify-center">
-                            <div className="text-red-800 font-bold text-xl text-red-800 text-center">No reported cases yet</div>
+                            <div className="text-red-800 font-bold text-xl text-center">No reported cases yet</div>
                         </div>
                     ) : (
-                        <Chart
-                            chartType="ColumnChart"
-                            width="100%"
-                            height="90%"
-                            data={data}
-                            options={options}
-                        />
+                        <div className="flex justify-center items-center p-5 w-full h-full">
+                            <Chart
+                                chartType="LineChart" // Changed to LineChart
+                                width="100%"
+                                height="90%"
+                                data={data}
+                                options={options}
+                            />
+                        </div>
                     )}
                 </>
             )}
-
         </div>
     );
 }
