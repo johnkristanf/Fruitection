@@ -20,20 +20,23 @@ from ws_client import clients
 from upload.upload_ds_image import DatasetDatabaseOperations, DatasetImageUploadMethod
 from cache.redis import RedisCachingMethods
 from ML.predict import ClamPrediction
-from train.process_train import train_new_model
+from train.test_process_train import train_new_model
 
 app = FastAPI()
 
-# comment this out when you push to production cause the nginx configuration 
+# remove AllowCors when you push to production cause the nginx configuration 
 # is handling the cors to avoid duplication error
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  
-    allow_credentials=True,
-    allow_methods=["*"],  
-    allow_headers=["*"], 
-)
+# LEARNING note: THIS CORS CONFIG IS FOR LOCAL ONLY, IN BEST PRACTICES
+# MAKE THIS DYNAMIC BY USING ENV == 'PRODUCTION'
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  
+#     allow_credentials=True,
+#     allow_methods=["*"],  
+#     allow_headers=["*"], 
+# )
 
 load_dotenv('.env')
 

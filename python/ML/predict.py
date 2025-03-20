@@ -13,7 +13,7 @@ predict = PredictDatabaseOperations()
 
 class ClamPrediction():
     def __init__(self):
-        self.model_path = os.path.abspath("./models/resnet50_model.tflite")
+        self.model_path = os.path.abspath("./models/main/latest_model.tflite")
         self.model = self.load_tflite_model()
 
     def load_tflite_model(self):
@@ -33,8 +33,8 @@ class ClamPrediction():
 
     def resize_and_preprocess_image(self, image_path):
         img = Image.open(image_path)
-        img = img.resize((180, 180)) 
-        img = preprocess_input(np.array(img)) 
+        img = img.resize((224, 224)) 
+        img = np.array(img, dtype=np.uint8)
         return np.expand_dims(img, axis=0)
 
     def durian_predict(self, image_path):
@@ -57,15 +57,18 @@ class ClamPrediction():
 
         # CLASSES = self.load_dataset_classes()
 
-        CLASSES = ['Durian Spot', 'Durian blight', 'Healthy', 'Mature', 'Unknown', 'Unripe']
-        print("Classes:", CLASSES)
+        ORIGINAL_CLASSES = ['Leaf spot', 'Leaf blight', 'Healthy', 'Unknown']
+        print("Classes:", ORIGINAL_CLASSES)
 
-        predictions_flat = predictions.flatten()  # Flatten the 2D array to 1D
+        predictions_flat = predictions.flatten() 
         predictions_percentage = predictions_flat * 100  
         print("Predictions in percentage:", predictions_percentage)
 
+        # PREDICTED CLASS
         predicted_class_index = np.argmax(predictions_flat) 
-        predicted_class = CLASSES[predicted_class_index] 
+        predicted_class = ORIGINAL_CLASSES[predicted_class_index] 
+
+        # PREDICTED PERCENTAGE
         predicted_class_percentage = predictions_percentage[predicted_class_index] 
         predicted_class_percentage_str = f"{predicted_class_percentage:.2f}%"
 

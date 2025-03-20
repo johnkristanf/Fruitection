@@ -90,10 +90,12 @@ func main() {
 
 	// remove AllowCors when you push to production cause the nginx configuration 
 	// is handling the cors to avoid duplication error
-	
+
+	// LEARNING NOTE: THIS CORS CONFIG IS FOR LOCAL ONLY, IN BEST PRACTICES
+	// MAKE THIS DYNAMIC BY USING ENV == 'PRODUCTION'
 	stack := middlewares.Use(
 		middlewares.Logger,
-		middlewares.AllowCors,
+		// middlewares.AllowCors,
 	)
 
 	s := http.Server{

@@ -102,7 +102,7 @@ func SeedAdminAccount(db *gorm.DB) error {
 func SeedFarms(db *gorm.DB) (err error) {
 	
 	farms := [2]string{
-		"Cagangohan Farm", 
+		"Maduao Farm", 
 		"J.P.Laurel Farm",
 	}
 

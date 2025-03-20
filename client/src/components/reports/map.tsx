@@ -180,8 +180,8 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
                 value={selectedDurian}
                 onChange={(e) => setSelectedDurian(e.target.value)}
               >
-                <option value={'Durian blight'}>Phytophthora Palmivora Fruit Rot (Late Stage)</option>
-                <option value={'Durian Spot'}>Phytophthora Palmivora Fruit Rot (Early Stage)</option>
+                <option value={'Leaf Blight'}>Phytophthora Palmivora Fruit Rot (Late Stage)</option>
+                <option value={'Leaf Spot'}>Phytophthora Palmivora Fruit Rot (Early Stage)</option>
               </select>
             </div>
           </div>
@@ -199,9 +199,9 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
           {reports?.map((data) => {
             
             const diseaseType = data.durian_disease_type.toLowerCase(); 
-            const icon = diseaseType === 'durian blight' ? orangeIcon : blackIcon;
-            const circleOptions = diseaseType === 'durian blight' ? orangeCircleOptions : blackCircleOptions;
-            const formattedDdt = diseaseType === 'durian blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : diseaseType === 'durian spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' : data.durian_disease_type;
+            const icon = diseaseType === 'leaf blight' ? orangeIcon : blackIcon;
+            const circleOptions = diseaseType === 'leaf blight' ? orangeCircleOptions : blackCircleOptions;
+            const formattedDdt = diseaseType === 'leaf blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : diseaseType === 'leaf spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' : data.durian_disease_type;
         
 
             return (
