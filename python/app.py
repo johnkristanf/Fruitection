@@ -271,8 +271,10 @@ async def train(data: dict):
 
 
 @app.post("/image/scan")
-async def scan(captured_image_file: UploadFile = File(...)):
+async def scan(diseaseType: str = Form(...), captured_image_file: UploadFile = File(...)):
     file_path = None
+
+    print("diseaseType:", diseaseType)
 
     try:
         filename = secure_filename(captured_image_file.filename)
@@ -281,7 +283,7 @@ async def scan(captured_image_file: UploadFile = File(...)):
         with open(file_path, "wb") as buffer:
             buffer.write(captured_image_file.file.read())
 
-        predicted_class, predicted_class_percentage = predict.durian_predict(file_path)
+        predicted_class, predicted_class_percentage = predict.durian_predict(diseaseType, file_path)
 
         response_data = {
             "durian_disease_result": predicted_class,

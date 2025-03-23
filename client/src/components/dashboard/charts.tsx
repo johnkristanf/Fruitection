@@ -110,34 +110,59 @@ export function Charts() {
 
 
 function ReportedPerFarm() {
-    const reports_query = useQuery("perFarm_reports", FetchYearlyReportsPerFarm);
-    const reports: YearlyReportPerFarm[] = Array.isArray(reports_query.data?.data) ? reports_query.data.data : [];
-    
-    const data: (string | number | { role: string; })[][] = [
-        ["Farm", "Report Count", { role: "style" }],
-    ];
+    const reports_query = useQuery('perFarm_reports', FetchYearlyReportsPerFarm);
+    const reports: YearlyReportPerFarm[] = Array.isArray(reports_query.data?.data)
+        ? reports_query.data.data
+        : [];
 
-    console.log("reports: ", reports);
-
+    const farmData: { [farm: string]: number } = {};
     reports.forEach((report) => {
-        let color = "#000000"; // Default color
-        
-        if (report.farm === "J.P.Laurel Farm") {
-            color = "#b87333"; // Copper
-        } 
-        
-        data.push([report.farm, report.count, color]);
+        if (!farmData[report.farm]) {
+            farmData[report.farm] = 0;
+        }
+        farmData[report.farm] += report.count;
     });
-  
+
+    const farms = Object.keys(farmData).sort((a, b) => farmData[a] - farmData[b]);
+    const midPoint = Math.floor(farms.length / 2);
+
+    // Create separate series for red and blue segments
+    const redData: (string | number)[][] = [['Farm', 'Report Count']];
+    const blueData: (string | number)[][] = [['Farm', 'Report Count']];
+
+    farms.forEach((farm, index) => {
+        if (index < midPoint) {
+            redData.push([farm, farmData[farm]]);
+        } else {
+            blueData.push([farm, farmData[farm]]);
+        }
+    });
+
     const options = {
-        legend: { position: "none" },
+        hAxis: { title: 'Farm' },
+        vAxis: { title: 'Report Count' },
+        legend: { position: 'none' },
+        curveType: 'function',
+        series: {
+            0: { color: 'red' },
+            1: { color: 'blue' },
+        },
     };
+
+    // Combine data for the Chart component
+    const data: (string | number)[][] = [['Farm', 'Report Count']];
+    if (redData.length > 1) {
+        data.push(...redData.slice(1)); // Exclude header
+    }
+    if (blueData.length > 1) {
+        data.push(...blueData.slice(1));
+    }
 
     return (
         <div className="rounded-md bg-white p-4 h-full w-full">
             <h1 className="text-gray-600 font-bold text-2xl">Durian Disease Per Farm</h1>
-            <h1 className="text-gray-400 text-md mb-4">Yearly Reported Cases</h1>
-            
+            <h1 className="text-gray-400 text-md mb-4">Total Reported Cases</h1>
+
             {reports_query.isLoading ? (
                 <div className="h-[70%] w-full flex items-center justify-center">
                     <ThreeCircles color="#E53E3E" height={80} width={80} />
@@ -151,7 +176,7 @@ function ReportedPerFarm() {
                     ) : (
                         <div className="flex justify-center items-center p-5 w-full h-full">
                             <Chart
-                                chartType="ColumnChart"
+                                chartType="LineChart"
                                 width="100%"
                                 height="90%"
                                 data={data}
@@ -193,8 +218,11 @@ function ReportedDurianDiseaseTypes() {
 
     const options = {
         title: "Durian Disease Types",
-        curveType: "function", 
+        curveType: "function",
         legend: { position: "none" },
+        series: {
+            0: { color: "#22C55E" }, // Tailwind bg-green-700 equivalent in hex
+        },
     };
 
     return (
@@ -215,7 +243,7 @@ function ReportedDurianDiseaseTypes() {
                     ) : (
                         <div className="flex justify-center items-center p-5 w-full h-full">
                             <Chart
-                                chartType="LineChart" // Changed to LineChart
+                                chartType="ColumnChart" // Changed to LineChart
                                 width="100%"
                                 height="90%"
                                 data={data}

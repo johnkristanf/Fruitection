@@ -1,12 +1,12 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/johnkristanf/clamscanner/types"
 	"gorm.io/gorm"
-
 )
 
 type Reported_Cases struct {
@@ -21,11 +21,12 @@ type Reported_Cases struct {
     Status      		string  `gorm:"not null;default:In Progress"`
 	
     UserID      		int64   `gorm:"not null"`
+    FarmID      		int64   `gorm:"not null"`
 }
 type REPORTED_DB_METHOD interface {
 	InsertReport(*types.Reported_Cases) (int64, error)
 
-	FetchReportedCases() ([]*types.Fetch_Cases, error)
+	FetchReportedCases(string) ([]*types.Fetch_Cases, error)
 	FetchMapReportedCases(string, string, string) ([]*types.Fetch_Cases, error)
 	
 	FetchPerCityReports() ([]*types.YearlyReportsPerCity, error)
@@ -50,6 +51,28 @@ func (sql *SQL) InsertReport(reportCases *types.Reported_Cases) (int64, error) {
         return 0, err
     }
 
+	fmt.Println("reportCases.FarmName: ", reportCases.FarmName)
+
+
+	// var farmID int64 = 2 // Default FarmID
+
+    // if reportCases.FarmName != "Unknown Farm" {
+    //     var err error
+    //     farmID, err = UpdateFarmReportCount(sql.DB, reportCases.FarmName)
+    //     if err != nil {
+    //         fmt.Println("Error updating farms count:", err)
+    //         // Handle error appropriately, possibly returning an error or logging
+    //     }
+    // }
+
+	farmID, err := UpdateFarmReportCount(sql.DB, reportCases.FarmName)
+    if err != nil {
+        return 0, err
+	}
+
+	fmt.Println("farmID: ", farmID)
+
+
 
 	reportedAt := time.Now().In(location).Format("January 2, 2006 03:04 PM")
 
@@ -61,7 +84,9 @@ func (sql *SQL) InsertReport(reportCases *types.Reported_Cases) (int64, error) {
 		Street:    reportCases.Street,
 		ReportedAt:  reportedAt,
 		DurianDiseaseType: reportCases.DurianDiseaseType,
+
 		UserID:      reportCases.UserID,
+		FarmID: 	 farmID,	
 	}
 
 	result := sql.DB.Create(reportedCases)
@@ -69,10 +94,7 @@ func (sql *SQL) InsertReport(reportCases *types.Reported_Cases) (int64, error) {
 		return 0, result.Error
 	}
 
-	if err := UpdateFarmReportCount(sql.DB, reportCases.FarmName);  err != nil {
-		return 0, fmt.Errorf("error updating farms count: %w", err)
-	}
-
+	
 	lastInsertedID := reportedCases.ID
 
 	
@@ -81,23 +103,25 @@ func (sql *SQL) InsertReport(reportCases *types.Reported_Cases) (int64, error) {
 }
 
 
-func (sql *SQL) FetchReportedCases() ([]*types.Fetch_Cases, error) {
+func (sql *SQL) FetchReportedCases(farmName string) ([]*types.Fetch_Cases, error) {
+    var cases []*types.Fetch_Cases
 
-	var cases []*types.Fetch_Cases
+    query := sql.DB.Table("reported_cases").
+        Select(`reported_cases.id, reported_cases.longitude, reported_cases.latitude, reported_cases.city, reported_cases.province, reported_cases.street, reported_cases.reported_at, reported_cases.durian_disease_type, reported_cases.status, users.id AS user_id, users.full_name AS reporter_name, users.address AS reporter_address`).
+        Joins("INNER JOIN users ON reported_cases.user_id = users.id").
+        Joins("INNER JOIN farms ON reported_cases.farm_id = farms.id")
 
-	result := sql.DB.Table("reported_cases").
-		Select(`reported_cases.id, reported_cases.longitude, reported_cases.latitude, reported_cases.city, reported_cases.province, reported_cases.street, reported_cases.reported_at, reported_cases.durian_disease_type, reported_cases.status,
-		users.id AS user_id, users.full_name AS reporter_name, users.address AS reporter_address`).
+    if farmName != "All" {
+        query = query.Where("farms.name = ?", farmName)
+    }
 
-		Joins("INNER JOIN users ON reported_cases.user_id = users.id").
-		Order("reported_cases.id DESC").
-		Find(&cases);
+    result := query.Order("reported_cases.id DESC").Find(&cases)
 
-	if result.Error != nil {
-		return nil, result.Error
-	}	
+    if result.Error != nil {
+        return nil, result.Error
+    }
 
-	return cases, nil
+    return cases, nil
 }
 
 
@@ -159,7 +183,6 @@ func (sql *SQL) FetchReportPerFarm() ([]*types.YearlyReportsPerFarm, error) {
 
 	result := sql.DB.Table("farms").
 		Select(`name, count`).
-		Order("count DESC").
 		Find(&yearlyReports);
 
 		if result.Error != nil {
@@ -209,14 +232,25 @@ func (sql *SQL) UpdateReportStatus(report_id int64) error {
 	return nil
 }
 
-func UpdateFarmReportCount(DB *gorm.DB, farm string) error {
 
+func UpdateFarmReportCount(DB *gorm.DB, farm string) (int64, error) {
 	query := "UPDATE farms SET count = count + 1 WHERE name = ?"
-	if err := DB.Exec(query, farm).Error; err != nil {
-		return err
+	result := DB.Exec(query, farm)
+	if result.Error != nil {
+			return 0, result.Error
 	}
 
-	return nil
+	if result.RowsAffected == 0 {
+		return 0, errors.New("farm not found or no rows updated")
+	}
+
+	var id int64
+	query = "SELECT id FROM farms WHERE name = ?"
+	if err := DB.Raw(query, farm).Scan(&id).Error; err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
 
 

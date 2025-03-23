@@ -9,14 +9,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function ReportedCases({ setMapCoor, setOpenReportsModal }: any) {
+function ReportedCases({ setMapCoor, setOpenReportsModal, selectedFarm }: any) {
 
   const queryClient = useQueryClient();
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const reports_query = useQuery("reported_cases", FetchReports);
+  const reports_query = useQuery(
+    ["reported_cases", selectedFarm],
+    () => FetchReports(selectedFarm) 
+  );
+
+  console.log("selectedFarm: ", selectedFarm);
+  
+
   const reports = reports_query.data?.data;
 
 
@@ -85,7 +92,7 @@ function ReportedCases({ setMapCoor, setOpenReportsModal }: any) {
 
           <button
             onClick={() => viewMap(data.latitude, data.longitude)}
-            className="bg-blue-900 rounded-md font-bold p-2 text-white hover:opacity-75"
+            className="bg-green-700 rounded-md font-bold p-2 text-white hover:opacity-75"
           >
             View Map
           </button>
@@ -163,7 +170,6 @@ function ReportedCases({ setMapCoor, setOpenReportsModal }: any) {
       <div className="rounded-md h-full w-full">
 
         <table className="text-sm text-left w-full text-gray-800 font-semibold dark:text-gray-400 h-[50%]">
-
           <thead className="text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 font-bold">
             <tr>
               <th scope="col" className="py-3 px-6">Reporter Name</th>

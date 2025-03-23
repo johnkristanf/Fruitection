@@ -198,18 +198,15 @@ func (h *ReportHandler) FetchAllReportsHandler(w http.ResponseWriter, r *http.Re
 
 	var cases []*types.Fetch_Cases
 
+	selectedFarm := r.PathValue("selectedFarm")
 
-
-		cases, err := h.DB_METHOD.FetchReportedCases()
-		if err != nil {
-			return err
-		}
+	cases, err := h.DB_METHOD.FetchReportedCases(selectedFarm)
+	if err != nil {
+		return err
+	}
 
 		
-		return h.JSON_METHOD.JsonEncode(w, http.StatusOK, cases)
-
-
-
+	return h.JSON_METHOD.JsonEncode(w, http.StatusOK, cases)
 }
 
 func (h *ReportHandler) FetchMapReportsHandler(w http.ResponseWriter, r *http.Request) error {
@@ -251,15 +248,10 @@ func (h *ReportHandler) FetchYearlyReportByCityHandler(w http.ResponseWriter, r 
 
 func (h *ReportHandler) FetchYearlyReportByFarmHandler(w http.ResponseWriter, r *http.Request) error {
 
-	
-
 		yearlyReports, err := h.DB_METHOD.FetchReportPerFarm()
 		if err != nil{
 			return err
 		}
-
-
-		
 
 		return h.JSON_METHOD.JsonEncode(w, http.StatusOK, yearlyReports)
 

@@ -21,7 +21,7 @@ type Fetch_Cases struct{
 	Province  	  	string      `json:"province"` 
 	Street 	  		string      `json:"street"` 
 	ReportedAt 		string 		`json:"reportedAt"` 
-	DurianDiseaseType     string 		`json:"durian_disease_type"`
+	DurianDiseaseType string 	`json:"durian_disease_type"`
     Status      	string  	`json:"status"`
 	UserID     		int64 		`json:"user_id"` 
 

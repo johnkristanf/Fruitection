@@ -12,15 +12,12 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '../.env'))
 predict = PredictDatabaseOperations()
 
 class ClamPrediction():
-    def __init__(self):
-        self.model_path = os.path.abspath("./models/main/latest_model.tflite")
-        self.model = self.load_tflite_model()
 
-    def load_tflite_model(self):
-        if not os.path.exists(self.model_path):
-            raise FileNotFoundError(f"Model file does not exist: {self.model_path}")
+    def load_tflite_model(self, model_path):
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model file does not exist: {model_path}")
         
-        interpreter = tf.lite.Interpreter(model_path=self.model_path)
+        interpreter = tf.lite.Interpreter(model_path=model_path)
         interpreter.allocate_tensors()
         print("Model loaded successfully.")
 
@@ -31,33 +28,55 @@ class ClamPrediction():
         print("CLASSES IN PREDICT: ", CLASSES)
         return CLASSES
 
-    def resize_and_preprocess_image(self, image_path):
+    def resize_and_preprocess_image(self, image_path, img_size, dtype):
         img = Image.open(image_path)
-        img = img.resize((224, 224)) 
-        img = np.array(img, dtype=np.uint8)
+        img = img.resize(img_size) 
+        img = np.array(img, dtype=dtype)
         return np.expand_dims(img, axis=0)
 
-    def durian_predict(self, image_path):
+    def durian_predict(self, diseaseType, image_path):
         print("PREDICT")
-        
-        preprocessed_image = self.resize_and_preprocess_image(image_path)
 
-        input_details = self.model.get_input_details()
-        output_details = self.model.get_output_details()
+        model_path = None
+        ORIGINAL_CLASSES = None
+        dtype = None
+        img_size = None
+
+        if diseaseType == 'fruit':
+            img_size = (180, 180)
+            dtype = np.float32
+            ORIGINAL_CLASSES = ['Durian Spot', 'Durian blight', 'Healthy', 'Mature', 'Unknown', 'Unripe']
+            model_path = os.path.abspath("./models/main/fruit_model.tflite")
+
+        else:
+            img_size = (224, 224)
+            dtype = np.uint8
+            ORIGINAL_CLASSES = ['Leaf spot', 'Leaf blight', 'Healthy', 'Unknown']
+            model_path = os.path.abspath("./models/main/leaf_model.tflite")
+
+
+        print("model_path: ", model_path)
+        print("dtype: ", dtype)
+        print("ORIGINAL_CLASSES: ", ORIGINAL_CLASSES)
+
+        model = self.load_tflite_model(model_path)
+        preprocessed_image = self.resize_and_preprocess_image(image_path, img_size, dtype)
+
+        input_details = model.get_input_details()
+        output_details = model.get_output_details()
 
         input_index = input_details[0]['index']
         output_index = output_details[0]['index']
 
-        self.model.set_tensor(input_index, preprocessed_image)
+        model.set_tensor(input_index, preprocessed_image)
 
-        self.model.invoke()
+        model.invoke()
 
-        predictions = self.model.get_tensor(output_index)
+        predictions = model.get_tensor(output_index)
         print("Predictions:", predictions)
 
         # CLASSES = self.load_dataset_classes()
 
-        ORIGINAL_CLASSES = ['Leaf spot', 'Leaf blight', 'Healthy', 'Unknown']
         print("Classes:", ORIGINAL_CLASSES)
 
         predictions_flat = predictions.flatten() 

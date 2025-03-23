@@ -3,9 +3,9 @@ import axios, { AxiosResponse } from "axios";
 import { FetchMapReportsParams } from "../../types/map";
 import { DOMAIN_NAME_GO } from "../envPaths";
 
-export function FetchReports(): Promise<AxiosResponse<any, any>> {
+export function FetchReports(selectedFarm: string): Promise<AxiosResponse<any, any>> {
     try {
-        return axios.get(`${DOMAIN_NAME_GO}/fetch/reports`, {
+        return axios.get(`${DOMAIN_NAME_GO}/fetch/reports/${encodeURIComponent(selectedFarm)}`, {
             withCredentials: true
         });
     } catch (error) {

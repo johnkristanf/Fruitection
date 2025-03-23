@@ -1,5 +1,5 @@
 import { useQueryClient } from "react-query";
-import { useEffect, useState, lazy, Suspense, useCallback } from "react";
+import { useEffect, useState, lazy, Suspense, useCallback, ChangeEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
@@ -49,6 +49,13 @@ const ReportsPage: React.FC = () => {
     const [MapCoor, setMapCoor] = useState<number[]>([7.3087, 125.6841]);
     const [Reports, setReports] = useState<number | undefined>();
     const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(false)
+
+    const [selectedFarm, setSelectedFarm] = useState('All');
+
+    const handleFarmChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        setSelectedFarm(event.target.value);
+    };
+
 
 
     useEffect(() => {
@@ -104,11 +111,27 @@ const ReportsPage: React.FC = () => {
                             <div className="flex flex-col gap-5 h-full w-full">
                                 <div className="flex justify-between items-center">
                                     <h1 className="text-white font-bold text-3xl">Reported Cases</h1>
-                                    <button onClick={() => setOpenReportsModal(false)} className="bg-blue-900 rounded-md p-3 text-white font-bold flex items-center gap-2 hover:opacity-75 hover:cursor-pointer">
-                                        <FontAwesomeIcon className="text-white" icon={faTimes}/> Close Reports
-                                    </button>
+
+                                    <div className="w-[30%] flex items-center justify-end gap-3 font-semibold ">
+
+                                        <select 
+                                            className="w-[60%] rounded-md p-3 focus:outline-none"
+                                            value={selectedFarm} 
+                                            onChange={handleFarmChange}
+                                        >
+                                            <option value="All">All Farms</option>
+                                            <option value="Maduao Farm">Maduao Farm</option>
+                                            <option value="J.P.Laurel Farm">J.P.Laurel Farm</option>
+                                        </select>
+
+                                        <button onClick={() => setOpenReportsModal(false)} className="bg-green-700 rounded-md p-3 text-white flex items-center gap-2 hover:opacity-75 hover:cursor-pointer">
+                                            <FontAwesomeIcon className="text-white" icon={faTimes}/> Close Reports
+                                        </button>
+                                    </div>
+
+                                    
                                 </div>
-                                <ReportedCases setMapCoor={setMapCoor} setOpenReportsModal={setOpenReportsModal} />
+                                <ReportedCases setMapCoor={setMapCoor} setOpenReportsModal={setOpenReportsModal} selectedFarm={selectedFarm} />
                             </div>
                         </div>
                     </>
