@@ -202,7 +202,7 @@ function ReportedPerFarm() {
     console.log("reports per farm: ", reports);
 
     // Prepare data for the Chart component
-    const data: (string | number | string)[][] = [['Farm', 'Report Count', { type: 'string', role: 'tooltip' }]];
+    const data: (string | number | object)[][] = [['Farm', 'Report Count', { type: 'string', role: 'tooltip' }]];
 
     if (reports.length > 0) {
         reports.forEach((report) => {

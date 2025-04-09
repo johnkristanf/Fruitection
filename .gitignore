@@ -25,4 +25,6 @@ python/.envpython/.env
 
 *.png
 
+*.rdb
+
 docker-compose.yml
