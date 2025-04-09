@@ -38,6 +38,7 @@ type YearlyReportsPerCity struct{
 
 type YearlyReportsPerFarm struct{
 	Name 			string	`json:"farm"` 
+	Year 			string	`json:"year"` 
 	Count 			int64	`json:"count"` 
 }
 

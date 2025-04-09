@@ -109,54 +109,115 @@ export function Charts() {
 // }
 
 
+// function ReportedPerFarm() {
+//     const reports_query = useQuery('perFarm_reports', FetchYearlyReportsPerFarm);
+//     const reports: YearlyReportPerFarm[] = Array.isArray(reports_query.data?.data)
+//         ? reports_query.data.data
+//         : [];
+
+//     console.log("reports per farm: ", reports)
+
+//     const farmData: { [farm: string]: number } = {};
+//     reports.forEach((report) => {
+//         if (!farmData[report.farm]) {
+//             farmData[report.farm] = 0;
+//         }
+//         farmData[report.farm] += report.count;
+//     });
+
+//     const farms = Object.keys(farmData).sort((a, b) => farmData[a] - farmData[b]);
+//     const midPoint = Math.floor(farms.length / 2);
+
+//     // Create separate series for red and blue segments
+//     const redData: (string | number)[][] = [['Farm', 'Report Count']];
+//     const blueData: (string | number)[][] = [['Farm', 'Report Count']];
+
+//     farms.forEach((farm, index) => {
+//         if (index < midPoint) {
+//             redData.push([farm, farmData[farm]]);
+//         } else {
+//             blueData.push([farm, farmData[farm]]);
+//         }
+//     });
+
+//     const options = {
+//         hAxis: { title: 'Farm' },
+//         vAxis: { title: 'Report Count' },
+//         legend: { position: 'none' },
+//         curveType: 'function',
+//         series: {
+//             0: { color: 'red' },
+//             1: { color: 'blue' },
+//         },
+//     };
+
+//     // Combine data for the Chart component
+//     const data: (string | number)[][] = [['Farm', 'Report Count']];
+//     if (redData.length > 1) {
+//         data.push(...redData.slice(1)); // Exclude header
+//     }
+//     if (blueData.length > 1) {
+//         data.push(...blueData.slice(1));
+//     }
+
+//     return (
+//         <div className="rounded-md bg-white p-4 h-full w-full">
+//             <h1 className="text-gray-600 font-bold text-2xl">Durian Disease Per Farm</h1>
+//             <h1 className="text-gray-400 text-md mb-4">Total Reported Cases</h1>
+
+//             {reports_query.isLoading ? (
+//                 <div className="h-[70%] w-full flex items-center justify-center">
+//                     <ThreeCircles color="#E53E3E" height={80} width={80} />
+//                 </div>
+//             ) : (
+//                 <>
+//                     {reports.length === 0 ? (
+//                         <div className="h-[70%] w-full flex items-center justify-center">
+//                             <div className="text-red-800 font-bold text-xl text-center">No reported cases yet</div>
+//                         </div>
+//                     ) : (
+//                         <div className="flex justify-center items-center p-5 w-full h-full">
+//                             <Chart
+//                                 chartType="LineChart"
+//                                 width="100%"
+//                                 height="90%"
+//                                 data={data}
+//                                 options={options}
+//                             />
+//                         </div>
+//                     )}
+//                 </>
+//             )}
+//         </div>
+//     );
+// }
+
+
 function ReportedPerFarm() {
     const reports_query = useQuery('perFarm_reports', FetchYearlyReportsPerFarm);
     const reports: YearlyReportPerFarm[] = Array.isArray(reports_query.data?.data)
         ? reports_query.data.data
         : [];
 
-    const farmData: { [farm: string]: number } = {};
-    reports.forEach((report) => {
-        if (!farmData[report.farm]) {
-            farmData[report.farm] = 0;
-        }
-        farmData[report.farm] += report.count;
-    });
+    console.log("reports per farm: ", reports);
 
-    const farms = Object.keys(farmData).sort((a, b) => farmData[a] - farmData[b]);
-    const midPoint = Math.floor(farms.length / 2);
+    // Prepare data for the Chart component
+    const data: (string | number | string)[][] = [['Farm', 'Report Count', { type: 'string', role: 'tooltip' }]];
 
-    // Create separate series for red and blue segments
-    const redData: (string | number)[][] = [['Farm', 'Report Count']];
-    const blueData: (string | number)[][] = [['Farm', 'Report Count']];
-
-    farms.forEach((farm, index) => {
-        if (index < midPoint) {
-            redData.push([farm, farmData[farm]]);
-        } else {
-            blueData.push([farm, farmData[farm]]);
-        }
-    });
+    if (reports.length > 0) {
+        reports.forEach((report) => {
+            const tooltipContent = `Farm: ${report.farm}\nYear: ${report.year}\nReport Count: ${report.count}`;
+            data.push([report.farm, report.count, tooltipContent]);
+        });
+    }
 
     const options = {
         hAxis: { title: 'Farm' },
         vAxis: { title: 'Report Count' },
         legend: { position: 'none' },
         curveType: 'function',
-        series: {
-            0: { color: 'red' },
-            1: { color: 'blue' },
-        },
+        tooltip: { isHtml: false }, // Disable HTML tooltips for raw text
     };
-
-    // Combine data for the Chart component
-    const data: (string | number)[][] = [['Farm', 'Report Count']];
-    if (redData.length > 1) {
-        data.push(...redData.slice(1)); // Exclude header
-    }
-    if (blueData.length > 1) {
-        data.push(...blueData.slice(1));
-    }
 
     return (
         <div className="rounded-md bg-white p-4 h-full w-full">

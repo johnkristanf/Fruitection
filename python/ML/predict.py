@@ -36,6 +36,7 @@ class ClamPrediction():
 
     def durian_predict(self, diseaseType, image_path):
         print("PREDICT")
+        print("diseaseType: ", diseaseType)
 
         model_path = None
         ORIGINAL_CLASSES = None
@@ -45,14 +46,20 @@ class ClamPrediction():
         if diseaseType == 'fruit':
             img_size = (180, 180)
             dtype = np.float32
-            ORIGINAL_CLASSES = ['Durian Spot', 'Durian blight', 'Healthy', 'Mature', 'Unknown', 'Unripe']
-            model_path = os.path.abspath("./models/main/fruit_model.tflite")
+            ORIGINAL_CLASSES = ['Durian Spot', 'Durian blight', 'Unknown']
+            model_path = os.path.abspath("./models/main/diseased_fruit.tflite")
+
+        elif diseaseType == 'leaf':
+            img_size = (180, 180)
+            dtype = np.float32
+            ORIGINAL_CLASSES = ['Leaf spot', 'Leaf blight', 'Unknown']
+            model_path = os.path.abspath("./models/main/diseased_leaf.tflite")
 
         else:
-            img_size = (224, 224)
-            dtype = np.uint8
-            ORIGINAL_CLASSES = ['Leaf spot', 'Leaf blight', 'Healthy', 'Unknown']
-            model_path = os.path.abspath("./models/main/leaf_model.tflite")
+            img_size = (180, 180)
+            dtype = np.float32
+            ORIGINAL_CLASSES = ['Leaf spot', 'Leaf blight', 'Unknown']
+            model_path = os.path.abspath("./models/main/diseased_leaf.tflite")
 
 
         print("model_path: ", model_path)

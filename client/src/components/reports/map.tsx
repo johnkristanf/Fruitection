@@ -62,6 +62,28 @@ const blackIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
+
+const greenIcon = new L.Icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41],
+});
+
+
+
+const yellowIcon = new L.Icon({
+  iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41],
+});
+
+
 const orangeCircleOptions: L.CircleMarkerOptions = {
   color: 'orange',
   fillColor: 'transparent',
@@ -71,6 +93,22 @@ const orangeCircleOptions: L.CircleMarkerOptions = {
 
 const blackCircleOptions: L.CircleMarkerOptions = {
   color: 'black',
+  fillColor: 'transparent',
+  fillOpacity: 0,
+  weight: 1,
+};
+
+
+const greenCircleOptions: L.CircleMarkerOptions = {
+  color: 'green',
+  fillColor: 'transparent',
+  fillOpacity: 0,
+  weight: 1,
+};
+
+
+const yellowCircleOptions: L.CircleMarkerOptions = {
+  color: 'yellow',
   fillColor: 'transparent',
   fillOpacity: 0,
   weight: 1,
@@ -198,10 +236,32 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
 
           {reports?.map((data) => {
             
-            const diseaseType = data.durian_disease_type.toLowerCase(); 
-            const icon = diseaseType === 'leaf blight' ? orangeIcon : blackIcon;
-            const circleOptions = diseaseType === 'leaf blight' ? orangeCircleOptions : blackCircleOptions;
-            const formattedDdt = diseaseType === 'leaf blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : diseaseType === 'leaf spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' : data.durian_disease_type;
+            const diseaseType = data.durian_disease_type.toLowerCase();
+            let icon: L.Icon;
+            let circleOptions: L.CircleMarkerOptions;
+            let formattedDdt: string;
+
+            if (diseaseType === 'durian blight') {
+              icon = orangeIcon; 
+              circleOptions = orangeCircleOptions; // Assuming you have orangeCircleOptions defined
+              formattedDdt = 'Phytophthora Palmivora Fruit Rot (Late Stage)';
+            } else if (diseaseType === 'durian spot') {
+              icon = blackIcon; 
+              circleOptions = blackCircleOptions; // Assuming you have blackCircleOptions defined
+              formattedDdt = 'Phytophthora Palmivora Fruit Rot (Early Stage)';
+            } else if (diseaseType === 'leaf spot') {
+              icon = greenIcon;
+              circleOptions = greenCircleOptions;
+              formattedDdt = 'Durian Leaf Spot';
+            } else if (diseaseType === 'leaf blight') {
+              icon = yellowIcon;
+              circleOptions = yellowCircleOptions;
+              formattedDdt = 'Durian Leaf Blight';
+            } else {
+              icon = greenIcon; // Or any other default icon
+              circleOptions = greenCircleOptions; // Or any other default circle options
+              formattedDdt = data.durian_disease_type;
+            }
         
 
             return (
@@ -236,14 +296,45 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
         <div className="absolute top-4 right-4 bg-white p-4 rounded-lg shadow-lg" style={{ zIndex: 9999 }}>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png" width={20} height={30} />
+              <img
+                src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png"
+                width={20}
+                height={30}
+                alt="Orange Marker"
+              />
               <h1 className="text-sm">Phytophthora Palmivora Fruit Rot (Late Stage)</h1>
             </div>
 
             <div className="flex items-center gap-2">
-              <img src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png" width={20} height={30} />
+              <img
+                src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png"
+                width={20}
+                height={30}
+                alt="Black Marker"
+              />
               <h1 className="text-sm">Phytophthora Palmivora Fruit Rot (Early Stage)</h1>
             </div>
+
+            <div className="flex items-center gap-2">
+              <img
+                src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png"
+                width={20}
+                height={30}
+                alt="Brown Marker"
+              />
+              <h1 className="text-sm">Durian Leaf Spot</h1>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <img
+                src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png"
+                width={20}
+                height={30}
+                alt="Light Green Marker"
+              />
+              <h1 className="text-sm">Durian Leaf Blight</h1>
+            </div>
+          
           </div>
         </div>
 

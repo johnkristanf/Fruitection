@@ -27,6 +27,7 @@ export type YearlyReportPerCity = {
 
 export type YearlyReportPerFarm = {
     farm: string
+    year: string
     count: number,
 }
 

@@ -23,6 +23,8 @@ type Reported_Cases struct {
     UserID      		int64   `gorm:"not null"`
     FarmID      		int64   `gorm:"not null"`
 }
+
+
 type REPORTED_DB_METHOD interface {
 	InsertReport(*types.Reported_Cases) (int64, error)
 
@@ -41,6 +43,9 @@ type Farms struct {
 	ID          int64   `gorm:"primaryKey;autoIncrement:true;uniqueIndex:idx_reportedID"`
 	Name        string  `gorm:"not null"`
 	Count       int64   `gorm:"not null;default:0"`  
+
+	CreatedAt 		time.Time `gorm:"not null;autoCreateTime"`	
+
 }
 
 
@@ -64,6 +69,9 @@ func (sql *SQL) InsertReport(reportCases *types.Reported_Cases) (int64, error) {
     //         // Handle error appropriately, possibly returning an error or logging
     //     }
     // }
+
+    
+	reportCases.FarmName = "Maduao Farm"
 
 	farmID, err := UpdateFarmReportCount(sql.DB, reportCases.FarmName)
     if err != nil {
@@ -182,12 +190,15 @@ func (sql *SQL) FetchReportPerFarm() ([]*types.YearlyReportsPerFarm, error) {
 	var yearlyReports []*types.YearlyReportsPerFarm
 
 	result := sql.DB.Table("farms").
-		Select(`name, count`).
-		Find(&yearlyReports);
+		Select("farms.name, CAST(SUBSTR(reported_cases.reported_at, 11, 4) AS INTEGER) as year, farms.count").
+		Joins("LEFT JOIN reported_cases ON farms.id = reported_cases.farm_id").
+		Group("farms.name, CAST(SUBSTR(reported_cases.reported_at, 11, 4) AS INTEGER), farms.count").
+		Order("year DESC").
+		Scan(&yearlyReports)
 
-		if result.Error != nil {
-			return nil, result.Error
-		}	
+	if result.Error != nil {
+		return nil, result.Error
+	}	
 		
 
 	return yearlyReports, nil
