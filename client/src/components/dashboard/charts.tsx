@@ -201,28 +201,56 @@ function ReportedPerFarm() {
 
     console.log("reports per farm: ", reports);
 
-    // Prepare data for the Chart component
-    const data: (string | number | object)[][] = [['Farm', 'Report Count', { type: 'string', role: 'tooltip' }]];
+    // Prepare data structure to organize by farm and year
+    const farmYearData = {};
+    const allYears = new Set();
+    const allFarms = new Set();
 
-    if (reports.length > 0) {
-        reports.forEach((report) => {
-            const tooltipContent = `Farm: ${report.farm}\nYear: ${report.year}\nReport Count: ${report.count}`;
-            data.push([report.farm, report.count, tooltipContent]);
+    // Process the data to organize by farm and year
+    reports.forEach((report) => {
+        const { farm, year, count } = report;
+        
+        allYears.add(year);
+        allFarms.add(farm);
+        
+        if (!farmYearData[farm]) {
+            farmYearData[farm] = {};
+        }
+        
+        farmYearData[farm][year] = count;
+    });
+
+    // Convert the processed data into a format suitable for Google Charts
+    const chartData = [];
+    
+    // Create the header row with year as the first column and each farm as subsequent columns
+    const headerRow = ['Year'];
+    allFarms.forEach(farm => headerRow.push(farm));
+    chartData.push(headerRow);
+
+    // Add data rows for each year
+    const sortedYears = Array.from(allYears).sort();
+    sortedYears.forEach(year => {
+        const yearRow = [year];
+        allFarms.forEach(farm => {
+            // Add the count for each farm in this year (or 0 if no data)
+            yearRow.push(farmYearData[farm]?.[year] || 0);
         });
-    }
+        chartData.push(yearRow);
+    });
 
     const options = {
-        hAxis: { title: 'Farm' },
+        hAxis: { title: 'Year' },
         vAxis: { title: 'Report Count' },
-        legend: { position: 'none' },
-        curveType: 'function',
-        tooltip: { isHtml: false }, // Disable HTML tooltips for raw text
+        legend: { position: 'bottom' },
+        curveType: 'function', // Creates smoother lines
+        colors: ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#8B4513', '#FF7F00'], // Google colors + some extras
     };
 
     return (
         <div className="rounded-md bg-white p-4 h-full w-full">
-            <h1 className="text-gray-600 font-bold text-2xl">Durian Disease Per Farm</h1>
-            <h1 className="text-gray-400 text-md mb-4">Total Reported Cases</h1>
+            <h1 className="text-gray-600 font-bold text-2xl">Durian Disease Reports Per Farm</h1>
+            <h1 className="text-gray-400 text-md mb-4">By Year</h1>
 
             {reports_query.isLoading ? (
                 <div className="h-[70%] w-full flex items-center justify-center">
@@ -240,7 +268,7 @@ function ReportedPerFarm() {
                                 chartType="LineChart"
                                 width="100%"
                                 height="90%"
-                                data={data}
+                                data={chartData}
                                 options={options}
                             />
                         </div>

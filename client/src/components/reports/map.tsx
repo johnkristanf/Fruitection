@@ -131,6 +131,12 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
   const [selectedMonth, setSelectedMonth] = useState<string>("All");
   const [selectedDurian, setSelectedDurian] = useState<string>("All");
 
+  useEffect(() => {
+    const today = new Date();
+    const currentMonthName = monthNames[today.getMonth()];
+    setSelectedMonth(currentMonthName);
+}, []);
+
   const reports_query = useQuery(
     ['reported_cases', selectedYear, selectedMonth, selectedDurian],
     () => FetchMapReports({ year: selectedYear, month: selectedMonth, durian: selectedDurian }),
@@ -218,8 +224,10 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
                 value={selectedDurian}
                 onChange={(e) => setSelectedDurian(e.target.value)}
               >
-                <option value={'Leaf Blight'}>Phytophthora Palmivora Fruit Rot (Late Stage)</option>
-                <option value={'Leaf Spot'}>Phytophthora Palmivora Fruit Rot (Early Stage)</option>
+                <option value={'Durian Blight'}>Phytophthora Palmivora Fruit Rot (Late Stage)</option>
+                <option value={'Durian Spot'}>Phytophthora Palmivora Fruit Rot (Early Stage)</option>
+                <option value={'Leaf Spot'}>Leaf Spot</option>
+                <option value={'Leaf Blight'}>Leaf Blight</option>
               </select>
             </div>
           </div>

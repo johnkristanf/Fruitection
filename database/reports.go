@@ -71,7 +71,7 @@ func (sql *SQL) InsertReport(reportCases *types.Reported_Cases) (int64, error) {
     // }
 
     
-	reportCases.FarmName = "Maduao Farm"
+	// reportCases.FarmName = "Maduao Farm"
 
 	farmID, err := UpdateFarmReportCount(sql.DB, reportCases.FarmName)
     if err != nil {
@@ -190,9 +190,9 @@ func (sql *SQL) FetchReportPerFarm() ([]*types.YearlyReportsPerFarm, error) {
 	var yearlyReports []*types.YearlyReportsPerFarm
 
 	result := sql.DB.Table("farms").
-		Select("farms.name, CAST(SUBSTR(reported_cases.reported_at, 11, 4) AS INTEGER) as year, farms.count").
+		Select("farms.name, CAST(SUBSTR(reported_cases.reported_at, 11, 4) AS INTEGER) as year, COUNT(reported_cases.id) as count").
 		Joins("LEFT JOIN reported_cases ON farms.id = reported_cases.farm_id").
-		Group("farms.name, CAST(SUBSTR(reported_cases.reported_at, 11, 4) AS INTEGER), farms.count").
+		Group("farms.name, CAST(SUBSTR(reported_cases.reported_at, 11, 4) AS INTEGER)").
 		Order("year DESC").
 		Scan(&yearlyReports)
 
