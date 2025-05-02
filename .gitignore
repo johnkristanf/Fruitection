@@ -16,14 +16,11 @@ python/models
 
 python/.envpython/.env
 
+python/datasets/
+
 .env
 
 *.pem
-
-
-*.jpg
-
-*.png
 
 *.rdb
 
