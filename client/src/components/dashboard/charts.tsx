@@ -381,7 +381,7 @@ function DatasetClasses() {
     };
 
     return (
-        <div className="rounded-md p-4 h-[80%] w-full bg-white"> 
+        <div className="rounded-md p-4 h-[80%] w-full bg-white mt-5"> 
             <h1 className="text-gray-600 text-2xl font-bold">Dataset Class Images</h1>
             <h1 className="text-gray-400 text-lg mb-4">Class Uploaded</h1>
 

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faChartColumn, faMapLocationDot, faRightFromBracket, faRobot, faTable } from "@fortawesome/free-solid-svg-icons";
 import { classNames } from "../../utils/style";
 import { useEffect, useState } from "react";
 import { AdminData } from "../../types/account";
@@ -14,12 +14,12 @@ export const SideBar: React.FC<SideBarProps> = ({ setisSidebarOpen }) => {
 
     return (
 
-      <div className="w-[25%] h-full fixed left-0 bg-green-600 flex flex-col justify-around p-5" style={{zIndex: 5000}}>
+      <div className="w-[55%] sm:w-72 h-full fixed left-0 bg-green-600 flex flex-col justify-around p-5" style={{zIndex: 5000}}>
 
         <FontAwesomeIcon
           onClick={() => setisSidebarOpen(false)} 
           icon={faBars} 
-          className="font-bold text-4xl hover:opacity-75 hover:cursor-pointer fixed top-2 left-2 text-white"
+          className="font-bold text-4xl sm:hidden hover:opacity-75 hover:cursor-pointer fixed top-2 left-2 text-white"
         />
 
         <Logo/>  
@@ -49,10 +49,10 @@ function Logo(){
 function NavLinks() {
 
   const navLinks = [
-    { name: "Dashboard", to: "/dashboard" },
-    { name: "Reports Map", to: "/reports" },
-    { name: "Datasets", to: "/datasets" },
-    { name: "Models", to: "/models" },
+    { name: "Dashboard", to: "/dashboard", icon: faChartColumn },
+    { name: "Reports Map", to: "/reports", icon: faMapLocationDot  },
+    { name: "Datasets", to: "/datasets", icon: faTable},
+    { name: "Models", to: "/models", icon: faRobot},
   ];
 
   
@@ -61,6 +61,10 @@ function NavLinks() {
     <div className="flex flex-col gap-8 text-white w-full">
 
       { navLinks.map((item) => (
+
+        <div className="flex items-center gap-2">
+
+            <FontAwesomeIcon icon={item.icon} />
 
             <Link
               key={item.name}  
@@ -72,6 +76,8 @@ function NavLinks() {
               {item.name}
 
             </Link>
+        </div>
+
       ))}
 
     </div>

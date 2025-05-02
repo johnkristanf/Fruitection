@@ -15,7 +15,7 @@ import ImagePagination from "../components/datasets/pagination";
 function DataSetsPage() {
     const queryClient = useQueryClient();
 
-    const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(false);
+    const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(true);
     const [datasetDetails, setDatasetDetails] = useState<boolean>(false);
     const [isOpenAddModal, setIsOpenAddModal] = useState<boolean>(false);
     const [isOpenUpload, setisOpenUpload] = useState<boolean>(false);
@@ -71,17 +71,19 @@ function DataSetsPage() {
     };
 
     return (
-        <div className="w-full h-full flex flex-col">
+        <div className="w-full h-full flex flex-col ">
             {isSidebarOpen && <SideBar setisSidebarOpen={setisSidebarOpen} />}
 
-            <div className="h-full w-full p-8">
-                <FontAwesomeIcon
+            <FontAwesomeIcon
                    onClick={() => setisSidebarOpen(true)} 
                    icon={faBars} 
                    className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer text-black p-2 rounded-md"
                 />
 
-                <div className="h-full w-full p-5  flex flex-col items-center gap-8 mt-12 rounded-md bg-gray-100">
+            <div className="h-full w-full sm:w-[80%] p-8 p-4 sm:ml-64">
+                
+
+                <div className="h-full w-full p-5  flex flex-col items-center rounded-md ">
 
                     {isOpenAddModal && (
                         <>
@@ -108,8 +110,8 @@ function DataSetsPage() {
                     ) : null}
 
                     {!datasetDetails && (
-                        <div className="flex justify-between w-full">
-                            <h1 className="text-green-600 font-bold text-4xl mb-3">Fruitection Dataset Classes</h1>
+                        <div className="flex justify-between w-full bg-white p-6 rounded-md">
+                            <h1 className="text-green-600 font-bold text-4xl ">Fruitection Dataset Classes</h1>
                             <button
                                 onClick={() => setIsOpenAddModal(true)}
                                 className="bg-green-600 rounded-md font-bold p-2 text-white hover:opacity-75">
@@ -143,7 +145,7 @@ function DataSetsPage() {
                             }
 
 
-                            <div className="rounded-md w-full flex justify-center p-8 bg-gray-200">
+                            <div className="rounded-md w-full flex justify-center p-8 ">
                                 <table className="text-sm text-left w-full max-w-4xl text-gray-800 font-semibold dark:text-gray-400 h-full">
                                     <thead className="text-md text-black uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 font-bold">
                                         <tr>

@@ -30,13 +30,13 @@ app = FastAPI()
 # LEARNING note: THIS CORS CONFIG IS FOR LOCAL ONLY, IN BEST PRACTICES
 # MAKE THIS DYNAMIC BY USING ENV == 'PRODUCTION'
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],  
-#     allow_credentials=True,
-#     allow_methods=["*"],  
-#     allow_headers=["*"], 
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"], 
+)
 
 load_dotenv('.env')
 

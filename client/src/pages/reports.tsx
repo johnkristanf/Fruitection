@@ -48,7 +48,7 @@ const ReportsPage: React.FC = () => {
 
     const [MapCoor, setMapCoor] = useState<number[]>([7.3087, 125.6841]);
     const [Reports, setReports] = useState<number | undefined>();
-    const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(false)
+    const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(true)
 
     const [selectedFarm, setSelectedFarm] = useState('All');
 
@@ -138,15 +138,17 @@ const ReportsPage: React.FC = () => {
                 )}
             </Suspense>
 
-
-                <div className="h-full w-full flex flex-col items-start p-8">
-
                     <FontAwesomeIcon
                         onClick={() => setisSidebarOpen(true)} 
                         icon={faBars} 
                         className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer text-black p-2 rounded-md"
                     />
-                    
+
+
+
+                <div className="w-full sm:ml-40 h-full sm:w-full flex flex-col items-start sm:px-[11rem]">
+
+                  
                     <Suspense fallback={
                         <div className="w-full h-screen flex justify-center items-center ">
                             <div className="text-4xl font-bold">Loading Reports Map....</div>

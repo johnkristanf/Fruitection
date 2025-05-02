@@ -181,17 +181,16 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
 
   return (
     <div className="h-screen w-full mt-10 pb-20">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 bg-white p-4 rounded-md">
         {/* <h1 className="text-gray-700 font-bold text-3xl">Reports Map</h1> */}
         <h1 className="text-green-600 font-bold text-4xl">Fruitection Reports Map</h1>
 
 
-        <div className="flex items-end justify-center gap-5 w-[60%]">
+        <div className="flex items-end justify-center gap-5 w-full">
           <div className="flex flex-col justify-center w-full gap-2">
             <h1 className="font-bold text-center">View Reports by</h1>
 
             <div className="flex gap-2">
-
 
               <select
                 className="bg-green-600 text-white font-bold rounded-md focus:outline-none p-2"
@@ -232,7 +231,7 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
             </div>
           </div>
           <button onClick={() => setOpenReportsModal(true)} className="rounded-md p-2 text-white font-bold bg-green-600 w-full hover:opacity-75 hover:cursor-pointer">
-            View Reports
+            Reports
           </button>
         </div>
       </div>

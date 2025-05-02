@@ -95,7 +95,7 @@ func main() {
 	// MAKE THIS DYNAMIC BY USING ENV == 'PRODUCTION'
 	stack := middlewares.Use(
 		middlewares.Logger,
-		// middlewares.AllowCors,
+		middlewares.AllowCors,
 	)
 
 	s := http.Server{

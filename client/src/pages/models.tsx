@@ -30,7 +30,7 @@ interface TrainingMetrics {
 }
 
 const ModelsPage: React.FC = () => {
-  const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(true);
   const [numberOfTrainedModels, setNumberOfTrainedModels] = useState<number | undefined>(undefined);
   const [trainingMetrics, setTrainingMetrics] = useState<TrainingMetrics>({
     epochs: [],
@@ -158,9 +158,10 @@ const ModelsPage: React.FC = () => {
             className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer text-black p-2 rounded-md"
           />
 
-        <div className="w-full flex justify-center">
-          <div className="w-[80%] rounded-md p-5 flex flex-col gap-5 bg-gray-100">
-            <div className="flex justify-between mb-3">
+        <div className="w-full flex justify-center sm:pr-[15rem] sm:ml-64">
+          <div className="w-full rounded-md p-5 flex flex-col gap-5 ">
+
+            <div className="flex justify-between bg-white p-6 rounded-md">
               <h1 className="text-green-600 font-bold text-4xl">Fruitection Trained Models</h1>
 
               <div className="flex items-center gap-3 font-semibold">

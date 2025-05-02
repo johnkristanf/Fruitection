@@ -6,7 +6,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 function DashboardPage(){
 
-    const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(false)
+    const [isSidebarOpen, setisSidebarOpen] = useState<boolean>(true)
 
     return (
         <div className="h-full w-full">
@@ -22,12 +22,16 @@ function DashboardPage(){
                    className="fixed top-3 font-bold text-3xl hover:opacity-75 hover:cursor-pointer text-black p-2 rounded-md"
                 />
 
-                <div className="h-[120vh] w-full p-5 flex flex-col gap-8 bg-gray-100 mt-12 rounded-md">
+                <div className="p-4 sm:ml-64">
+                        <div className="p-4 rounded-lg dark:border-gray-700">
+                            <h1 className="text-green-600 font-bold text-4xl bg-white p-3 rounded-md mb-5">
+                                Fruitection Dashboard
+                            </h1>
 
-                    <h1 className="text-green-600 font-bold text-4xl">Fruitection Dashboard</h1>
-                    <Charts />
+                            <Charts />
 
-                </div>  
+                        </div>
+                    </div>
 
                  
             </div>
