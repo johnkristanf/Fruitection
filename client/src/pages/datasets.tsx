@@ -157,7 +157,7 @@ function DataSetsPage() {
                                     <tbody>
                                         {datasets?.map((data) => (
                                             <tr key={data.class_id} className="bg-white">
-                                                <td className="py-4 px-6">{data.name.toLowerCase() === 'durian blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : data.name.toLowerCase() === 'durian spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)': data.name}</td>
+                                                <td className="py-4 px-6">{data.name.toLowerCase() === 'durian blight' ? 'Phytophthora palmivora Fruit Rot (Late Stage)' : data.name.toLowerCase() === 'durian spot' ? 'Phytophthora palmivora Fruit Rot (Early Stage)': data.name}</td>
                                                 <td className="py-4 px-6 flex gap-3">
                                                     <button
                                                         onClick={() => handleDetailsData(data)}
@@ -210,7 +210,7 @@ function DataSetDetails({classDetailsData, setDatasetDetails, setisOpenUpload, s
     console.log("image: ", image)
     
 
-    const formattedDdt = classDetailsData.name.toLowerCase() === 'leaf blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : classDetailsData.name.toLowerCase() === 'leaf spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' : classDetailsData.name;
+    const formattedDdt = classDetailsData.name.toLowerCase() === 'leaf blight' ? 'Phytophthora palmivora Fruit Rot (Late Stage)' : classDetailsData.name.toLowerCase() === 'leaf spot' ? 'Phytophthora palmivora Fruit Rot (Early Stage)' : classDetailsData.name;
 
 
     return(

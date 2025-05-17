@@ -18,6 +18,8 @@ func ReportsRoutes(router *http.ServeMux, reportsHandler *handlers.ReportHandler
 	router.HandleFunc("GET /fetch/reports/{selectedFarm}", ParseHTTPHandler(reportsHandler.FetchAllReportsHandler))
 	router.HandleFunc("GET /fetch/map/reports/{year}/{month}/{durian}", ParseHTTPHandler(reportsHandler.FetchMapReportsHandler))
 	
+	router.HandleFunc("GET /generate/reports", ParseHTTPHandler(reportsHandler.GenerateReportsHandler))
+
 	router.HandleFunc("GET /fetch/reports/city", adminAuth(ParseHTTPHandler(reportsHandler.FetchYearlyReportByCityHandler)))
 	router.HandleFunc("GET /fetch/reports/farm", adminAuth(ParseHTTPHandler(reportsHandler.FetchYearlyReportByFarmHandler)))
 	router.HandleFunc("GET /fetch/reports/mollusk", adminAuth(ParseHTTPHandler(reportsHandler.FetchReportPerDurianDiseaseHandler)))

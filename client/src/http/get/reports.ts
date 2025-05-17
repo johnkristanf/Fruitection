@@ -66,3 +66,15 @@ export function FetchReportsPerMollusk(): Promise<AxiosResponse<any, any>> {
         return Promise.reject(error); 
     }
 }
+
+export async function GenerateReports(){
+    try {
+        const response = await axios.get(`${DOMAIN_NAME_GO}/generate/reports`, {
+          responseType: 'blob', 
+        });
+  
+        return response.data;
+      } catch (error) {
+        console.error('Error downloading Excel file:', error);
+      }
+}

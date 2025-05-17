@@ -244,6 +244,8 @@ function ReportedPerFarm() {
         chartData.push(yearRow);
     });
 
+    console.log("per farm reports: ", reports)
+
     const options = {
         hAxis: { title: 'Year' },
         vAxis: { title: 'Report Count' },
@@ -302,8 +304,8 @@ function ReportedDurianDiseaseTypes() {
 
             // Format disease names
             const formattedDdt =
-                ddt.toLowerCase() === 'durian blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' :
-                ddt.toLowerCase() === 'durian spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' :
+                ddt.toLowerCase() === 'durian blight' ? 'Phytophthora palmivora Fruit Rot (Late Stage)' :
+                ddt.toLowerCase() === 'durian spot' ? 'Phytophthora palmivora Fruit Rot (Early Stage)' :
                 ddt;
 
             data.push([formattedDdt, item.durian_disease_count]); // Remove color field
@@ -361,7 +363,7 @@ function DatasetClasses() {
     if (datasetclasses) {
         datasetclasses.forEach((item) => {
 
-            const formattedDdt = item.name.toLowerCase() === 'durian blight' ? 'Phytophthora Palmivora Fruit Rot (Late Stage)' : item.name.toLowerCase() === 'durian spot' ? 'Phytophthora Palmivora Fruit Rot (Early Stage)' : item.name;
+            const formattedDdt = item.name.toLowerCase() === 'durian blight' ? 'Phytophthora palmivora Fruit Rot (Late Stage)' : item.name.toLowerCase() === 'durian spot' ? 'Phytophthora palmivora Fruit Rot (Early Stage)' : item.name;
             data.push([formattedDdt, item.count]);
         });
     }

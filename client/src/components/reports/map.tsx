@@ -223,8 +223,8 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
                 value={selectedDurian}
                 onChange={(e) => setSelectedDurian(e.target.value)}
               >
-                <option value={'Durian Blight'}>Phytophthora Palmivora Fruit Rot (Late Stage)</option>
-                <option value={'Durian Spot'}>Phytophthora Palmivora Fruit Rot (Early Stage)</option>
+                <option value={'Durian Blight'}>Phytophthora palmivora Fruit Rot (Late Stage)</option>
+                <option value={'Durian Spot'}>Phytophthora palmivora Fruit Rot (Early Stage)</option>
                 <option value={'Leaf Spot'}>Leaf Spot</option>
                 <option value={'Leaf Blight'}>Leaf Blight</option>
               </select>
@@ -251,11 +251,11 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
             if (diseaseType === 'durian blight') {
               icon = orangeIcon; 
               circleOptions = orangeCircleOptions; // Assuming you have orangeCircleOptions defined
-              formattedDdt = 'Phytophthora Palmivora Fruit Rot (Late Stage)';
+              formattedDdt = 'Phytophthora palmivora Fruit Rot (Late Stage)';
             } else if (diseaseType === 'durian spot') {
               icon = blackIcon; 
               circleOptions = blackCircleOptions; // Assuming you have blackCircleOptions defined
-              formattedDdt = 'Phytophthora Palmivora Fruit Rot (Early Stage)';
+              formattedDdt = 'Phytophthora palmivora Fruit Rot (Early Stage)';
             } else if (diseaseType === 'leaf spot') {
               icon = greenIcon;
               circleOptions = greenCircleOptions;
@@ -309,7 +309,7 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
                 height={30}
                 alt="Orange Marker"
               />
-              <h1 className="text-sm">Phytophthora Palmivora Fruit Rot (Late Stage)</h1>
+              <h1 className="text-sm">Phytophthora palmivora Fruit Rot (Late Stage)</h1>
             </div>
 
             <div className="flex items-center gap-2">
@@ -319,7 +319,7 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
                 height={30}
                 alt="Black Marker"
               />
-              <h1 className="text-sm">Phytophthora Palmivora Fruit Rot (Early Stage)</h1>
+              <h1 className="text-sm">Phytophthora palmivora Fruit Rot (Early Stage)</h1>
             </div>
 
             <div className="flex items-center gap-2">
