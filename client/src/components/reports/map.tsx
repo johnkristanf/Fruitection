@@ -225,8 +225,8 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
               >
                 <option value={'Durian Blight'}>Phytophthora palmivora Fruit Rot (Late Stage)</option>
                 <option value={'Durian Spot'}>Phytophthora palmivora Fruit Rot (Early Stage)</option>
-                <option value={'Leaf Spot'}>Leaf Spot</option>
-                <option value={'Leaf Blight'}>Leaf Blight</option>
+                {/* <option value={'Leaf Spot'}>Leaf Spot</option>
+                <option value={'Leaf Blight'}>Leaf Blight</option> */}
               </select>
             </div>
           </div>
@@ -322,7 +322,7 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
               <h1 className="text-sm">Phytophthora palmivora Fruit Rot (Early Stage)</h1>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <img
                 src="https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png"
                 width={20}
@@ -340,7 +340,7 @@ function Map({ setMapCoor, MapCoor, setOpenReportsModal }: any) {
                 alt="Light Green Marker"
               />
               <h1 className="text-sm">Durian Leaf Blight</h1>
-            </div>
+            </div> */}
           
           </div>
         </div>
