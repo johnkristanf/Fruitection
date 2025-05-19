@@ -288,9 +288,8 @@ function ReportedDurianDiseaseTypes() {
 
     console.log('reports per durian type', reports)
 
-    // Updated data structure for LineChart
-    const data: (string | number)[][] = [
-        ['Durian Type', 'Report Count'], // Headers without "style"
+    const data: (string | number | object)[][] = [
+        ['Durian Type', 'Report Count', { role: 'style' }], // Add style column
     ]
 
     const seriesColors: { [key: string]: string } = {
@@ -298,11 +297,9 @@ function ReportedDurianDiseaseTypes() {
         'Phytophthora palmivora Fruit Rot (Early Stage)': '#000000', // black
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const series: any = {}
 
     if (reports.length > 0) {
-        reports.forEach((item, index) => {
+        reports.forEach((item) => {
             const ddt = item.durian_disease_type
 
             const formattedDdt =
@@ -312,11 +309,8 @@ function ReportedDurianDiseaseTypes() {
                     ? 'Phytophthora palmivora Fruit Rot (Early Stage)'
                     : ddt
 
-            data.push([formattedDdt, item.durian_disease_count])
-
-            series[index] = {
-                color: seriesColors[formattedDdt] || '#22C55E',
-            }
+            const color = seriesColors[formattedDdt] || '#22C55E'
+            data.push([formattedDdt, item.durian_disease_count, color])
         })
     }
 
@@ -324,7 +318,6 @@ function ReportedDurianDiseaseTypes() {
         title: 'Durian Disease Types',
         curveType: 'function',
         legend: { position: 'none' },
-        series,
     }
 
     return (
