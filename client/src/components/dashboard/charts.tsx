@@ -324,7 +324,7 @@ function ReportedDurianDiseaseTypes() {
     return (
         <div className="rounded-md bg-white p-4 h-full w-full"> 
             <h1 className="text-gray-600 font-bold text-2xl">Durian Disease Types</h1>
-            <h1 className="text-gray-400 text-md mb-4">Yearly Reported Cases</h1>
+            <h1 className="text-gray-400 text-md mb-4">Daily Reported Cases</h1>
 
             {reports_query.isLoading ? (
                 <div className="h-[70%] w-full flex items-center justify-center">
